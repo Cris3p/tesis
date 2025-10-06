@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <link rel="stylesheet" href="../css/inicio.css">
+  <title>Inicio</title>
+</head>
+<body>
+
+  <div class="header">
+    <span class="logo">OnTrack</span>
+    <div class="user-menu">
+      <a href="#" id="logoutBtn">Cerrar Sesión</a>
+      <button id="userBtn">
+        <img src="../img/user.png" alt="User Icon" class="avatar-img" />  
+        
+      </button>
+      <div id="menuDropdown" class="dropdown hidden">
+        <a href="perfil.html">Mi Perfil</a>
+        <a href="reportes.html">Reportes</a>
+        <a href="estadisticas.html">Estadísticas</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="map"></div>
+  <button id="btnQuitar" onclick="quitarMarker2()" style="display:none">Quitar marcador</button>
+  <button id="btn-emergencia">
+    <img src="../img/emergencia.png" alt="Emergencia Icon" class="emergencia" />
+  </button>
+
+  <script>
+    document.getElementById("userBtn").addEventListener("click", () => {
+      document.getElementById("menuDropdown").classList.toggle("hidden");
+    });
+
+    window.addEventListener("click", (e) => {
+      if (!e.target.closest(".user-menu")) {
+        document.getElementById("menuDropdown").classList.add("hidden");
+      }
+    });
+  </script>
+  
+  <script src="../js/inicio.js"></script>
+</body>
+</html>

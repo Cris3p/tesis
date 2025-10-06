@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reportar Incidente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link rel="stylesheet" href="../css/reportes.css" />
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="inicio.html">OnTrack</a>
+    <div class="user-menu">
+      <button id="userBtn">
+        <img src="../img/user.png" alt="User Icon" />
+      </button>
+      <div id="dropdown" class="dropdown hidden">
+        <a href="perfil.html">Mi Perfil</a>
+        <a href="reportes.html">Reportes</a>
+        <a href="estadisticas.html">Estadísticas</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="contenedor-formulario">
+    <h1>Reportar Incidente</h1>
+    <form id="reporteForm">
+      <label for="tipo">Tipo de crimen:</label>
+      <select id="tipo" name="tipo" required>
+        <option value="">Seleccionar</option>
+        <option value="robo">Robo</option>
+        <option value="desaparicion">Desaparición</option>
+        <option value="vandalismo">Vandalismo</option>
+        <option value="sexual">Sexual</option>
+        <option value="otro">Otro</option>
+      </select>
+
+      <label for="ubicacion">Ubicación del incidente:</label>
+      <div class="ubicacion-input">
+        <input type="text" id="ubicacion" name="ubicacion" placeholder="Buscar dirección o seleccioná en el mapa" required />
+        <ul id="sugerencias" class="sugerencias-lista"></ul>
+        <button type="button" onclick="obtenerUbicacion()">Usar ubicación actual</button>
+      </div>
+      <div class="contenido-mapa">
+        <div id="map"></div>
+      </div>
+
+      <input type="hidden" id="lat" name="lat">
+      <input type="hidden" id="lon" name="lon">
+      <input type="hidden" id="provincia" name="provincia">
+      <input type="hidden" id="localidad" name="localidad">
+
+      <label for="fecha">Fecha:</label>
+      <input type="date" id="fecha" name="fecha" required />
+
+      <label for="hora">Hora:</label>
+      <input type="time" id="hora" name="hora" required />
+
+      <label for="descripcion">Descripción del incidente:</label>
+      <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+
+      <div class="opcional">
+        <label>¿La zona estaba iluminada?</label>
+        <div class="opcion-botones">
+          <label class="opcion">
+            <input type="radio" name="iluminacion" value="si">
+            <span>Sí</span>
+          </label>
+          <label class="opcion">
+            <input type="radio" name="iluminacion" value="no">
+            <span>No</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="opcional">
+        <label>¿Había gente?</label>
+        <div class="opcion-botones">
+          <label class="opcion">
+            <input type="radio" name="gente" value="si">
+            <span>Sí</span>
+          </label>
+          <label class="opcion">
+            <input type="radio" name="gente" value="no">
+            <span>No</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit">Enviar Reporte</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <script src="../js/reportes.js"></script>
+  <script>
+    document.getElementById("userBtn").addEventListener("click", () => {
+      document.getElementById("dropdown").classList.toggle("hidden");
+    });
+
+    window.addEventListener("click", (e) => {
+      if (!e.target.closest(".user-menu")) {
+        document.getElementById("dropdown").classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
