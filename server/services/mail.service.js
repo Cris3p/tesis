@@ -20,7 +20,7 @@ const transporte = nodemailer.createTransport({
   secure: false,                 // STARTTLS usa false
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS
+    pass: process.env.SENDGRID_API_KEY
   },
  
 });
