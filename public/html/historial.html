@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Historial de Reportes</title>
+  <link rel="stylesheet" href="../css/historial.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="icon" type="image/x-icon" href="../img/logo_blanco.png">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+  <!-- jsPDF y jspdf-autotable para generar PDFs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+  <header class="header">
+    <a class="logo" href="inicio">OnTrack</a>
+    <div class="user-menu">
+      <button id="userBtn">
+        <img src="../img/user.png" alt="User Icon" />
+      </button>
+      <div id="dropdown" class="dropdown hidden">
+        <a href="/perfil">Mi Perfil</a>
+        <a href="/reportes">Reportes</a>
+        <a href="/estadisticas">Estadísticas</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="contenedor-historial">
+    <button id="btnVolver" class="btn-volver" title="Volver a Perfil">
+      <img src="../img/volver1.png" alt="Volver" class="btn-volver-img">
+    </button>
+    <h1>Mis Reportes</h1>
+
+    <table class="reportes-tabla">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Localidad</th>
+          <th>Fecha y hora</th>
+          <th>Descripción</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="lista-historial"></tbody>
+    </table>
+  </div>
+
+  <div id="editModal" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h2>Editar Reporte</h2>
+      <form id="editForm">
+        <input type="hidden" id="modal_id_reporte" name="id_reporte">
+
+        <label for="modal_tipo">Tipo de Crimen</label>
+        <select id="modal_tipo" name="tipo_crimen" required>
+          <option value="Robo">Robo</option>
+          <option value="Desaparicion">Desaparición</option>
+          <option value="Vandalismo">Vandalismo</option>
+          <option value="Sexual">Abuso</option>
+          <option value="Otro">Otro</option>
+        </select>
+
+        <label for="modal_descripcion">Descripción</label>
+        <textarea id="modal_descripcion" name="descripcion" rows="3" required></textarea>
+
+        <div class="fecha-hora-group">
+          <div>
+            <label for="modal_fecha">Fecha</label>
+            <input type="date" id="modal_fecha" name="fecha" required>
+          </div>
+          <div>
+            <label for="modal_hora">Hora</label>
+            <input type="time" id="modal_hora" name="hora" required>
+          </div>
+        </div>
+
+        <div id="modalMap" style="height: 300px; margin-bottom: 10px;"></div>
+
+        <label for="modal_provincia">Provincia</label>
+        <input type="text" id="modal_provincia" readonly>
+        <label for="modal_localidad">Localidad</label>
+        <input type="text" id="modal_localidad" readonly>
+
+        <input type="hidden" id="modal_lat" name="lat">
+        <input type="hidden" id="modal_lon" name="lon">
+
+        <fieldset>
+          <legend>¿Había iluminación?</legend>
+          <label><input type="radio" name="modal_iluminacion" value="si" required> Sí</label>
+          <label><input type="radio" name="modal_iluminacion" value="no"> No</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>¿Había gente cerca?</legend>
+          <label><input type="radio" name="modal_gente" value="si" required> Sí</label>
+          <label><input type="radio" name="modal_gente" value="no"> No</label>
+        </fieldset>
+
+        <button type="submit" id="modalSubmitBtn">Actualizar</button>
+        <button type="button" id="closeModalBtn">Cancelar</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="../js/historial.js"></script>
+</body>
+</html>

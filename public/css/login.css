@@ -92,7 +92,7 @@ header{
 }
 
 .register-link a {
-    color: #6957b3;    
+    color: #6957b3;
 }
 
 .right {
@@ -150,22 +150,21 @@ header{
     outline: 1px solid var(--violeta-principal);
     
 }
-.login-form input[type="text"] {
+.usuario input[type="text"] {
     margin: 25px 0 5px 0;
 }
 
 .login-form button {
     width: 100%;
     padding: 10px;
-    margin: 5px 0;
-    /* background-color: #007BFF; */
+    margin: 5px 0 15px 0 ;
     background-color: var(--violeta-principal);
     color: #fff;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    transition: 0.2s;
+    transition: none;
 }
 
 .login-form button:hover {
@@ -203,13 +202,12 @@ header{
     color: var(--violeta-principal);
     cursor: pointer;  
     z-index: 10;
-        width: 24px;         /* ancho fijo para el ícono */
+    width: 24px;         
     text-align: center;
 }
 
-/* Modal fondo */
 .modal {
-  display: none; /* oculto por defecto */
+  display: none; 
   position: fixed;
   z-index: 1000;
   left: 0;
@@ -219,22 +217,408 @@ header{
   background-color: rgba(0,0,0,0.6);
 }
 
-/* Caja modal */
-.modal-content {
-  background-color: #1e202c;
-  margin: 10% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 350px;
-  color: #fff;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  text-align: center;
-}
-
-/* Botón cerrar */
 .close {
   position: absolute;
-  right: 20px;
+  top: 10px;
+  right: 15px;
   font-size: 25px;
+  color: #bcb8e2;
   cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-content {
+  position: relative;
+  background: var(--negro-principal);
+  margin: 10% auto;
+  padding: 30px 25px;
+  border-radius: 16px;
+  width: 350px;
+  color: #fff;
+  box-shadow: 0 0 25px rgba(97, 72, 192, 0.5);
+  text-align: center;
+  animation: fadeInModal 0.3s ease;
+}
+
+.modal-content h2 {
+  font-family: 'Cal Sans', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  color: #bcb8e2;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  font-size: 15px;
+  color: #d2d2d2;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.modal-content input[type="email"] {
+  width: 100%;
+  padding: 12px 13px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--negro-secundario);
+  color: #fff;
+  outline: 1px solid transparent;
+  transition: outline 0.2s;
+}
+
+.modal-content input[type="email"]:focus {
+  outline: 1px solid var(--violeta-principal);
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 10px 0;
+  background-color: var(--violeta-principal);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.modal-content button:hover {
+  background-color: #4e4280;
+  transform: scale(1.03);
+}
+
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+} 
+
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablets (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .logo {
+        font-size: 26px;
+    }
+    
+    .nav-links a {
+        font-size: 16px;
+    }
+    
+    .login-form {
+        width: 80%;
+    }
+    
+    .login-form h2 {
+        font-size: 36px;
+    }
+    
+    .modal-content {
+        width: 400px;
+    }
+}
+
+/* Tablets pequeñas y móviles grandes (481px - 768px) */
+@media screen and (max-width: 768px) {
+    header {
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+    
+    .navbarra {
+        padding-right: 15px;
+    }
+    
+    .logo {
+        font-size: 24px;
+    }
+    
+    .nav-links {
+        gap: 1rem;
+    }
+    
+    .nav-links a {
+        font-size: 14px;
+    }
+    
+    .contenedor {
+        flex-direction: column;
+    }
+    
+    .left {
+        order: 1;
+        min-height: 100vh;
+        padding: 80px 20px 40px;
+        background: radial-gradient(circle at top right, #bfc0d1, #4e4280, #1e202c, #1e202c);
+    }
+    
+    .right {
+        display: none;
+    }
+    
+    .login-form {
+        width: 90%;
+        max-width: 500px;
+    }
+    
+    .login-form h2 {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+    
+    .login-form input {
+        padding: 12px 13px;
+        font-size: 15px;
+    }
+    
+    .login-form button {
+        padding: 12px;
+        font-size: 15px;
+    }
+    
+    .modal-content {
+        width: 90%;
+        max-width: 400px;
+        margin: 20% auto;
+    }
+}
+
+/* Móviles (max 480px) */
+@media screen and (max-width: 480px) {
+    body {
+        height: auto;
+        min-height: 100vh;
+    }
+    
+    header {
+        margin-top: 8px;
+        margin-left: 8px;
+        height: 35px;
+    }
+    
+    .navbarra {
+        width: 96%;
+        padding-right: 12px;
+    }
+    
+    .logo {
+        font-size: 20px;
+        letter-spacing: 1px;
+    }
+    
+    .nav-links {
+        gap: 0.8rem;
+    }
+    
+    .nav-links a {
+        font-size: 12px;
+    }
+    
+    .left {
+        padding: 60px 15px 30px;
+        background: radial-gradient(circle at top right, #bfc0d1, #4e4280, #1e202c, #1e202c);
+    }
+    
+    .login-form {
+        width: 95%;
+        padding: 15px;
+    }
+    
+    .login-form h2 {
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+    
+    .login-form input {
+        padding: 11px 10px;
+        font-size: 14px;
+        margin: 4px 0;
+    }
+    
+    .usuario input[type="text"] {
+        margin: 20px 0 4px 0;
+    }
+    
+    .login-form button {
+        padding: 11px;
+        font-size: 14px;
+        margin: 4px 0 12px 0;
+    }
+    
+    .usuario i {
+        font-size: 18px;
+        right: 12px;
+    }
+    
+    .usuario input,
+    .contraseña input {
+        padding-right: 35px;
+    }
+    
+    .contraseña .bx {
+        font-size: 18px;
+        right: 12px;
+    }
+    
+    .modal-content {
+        width: 92%;
+        padding: 25px 20px;
+        margin: 30% auto;
+    }
+    
+    .modal-content h2 {
+        font-size: 22px;
+    }
+    
+    .modal-content p {
+        font-size: 14px;
+    }
+    
+    .modal-content input[type="email"] {
+        padding: 11px 10px;
+        font-size: 14px;
+    }
+    
+    .modal-content button {
+        padding: 9px 0;
+        font-size: 14px;
+    }
+    
+    .close {
+        font-size: 22px;
+    }
+}
+
+/* Móviles muy pequeños (max 360px) */
+@media screen and (max-width: 360px) {
+    .logo {
+        font-size: 18px;
+    }
+    
+    .nav-links a {
+        font-size: 11px;
+    }
+    
+    .login-form h2 {
+        font-size: 24px;
+    }
+    
+    .login-form input,
+    .login-form button {
+        font-size: 13px;
+        padding: 10px;
+    }
+    
+    .modal-content {
+        padding: 20px 15px;
+    }
+    
+    .modal-content h2 {
+        font-size: 20px;
+    }
+    
+    .modal-content p {
+        font-size: 13px;
+    }
+}
+
+/* === SweetAlert2 Personalizado === */
+
+.swal2-container {
+  background: transparent !important;
+}
+
+.swal2-backdrop-show {
+  background: rgba(0, 0, 0, 0.7) !important;
+}
+
+@keyframes fadeInSwal {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.swal2-popup {
+  background-color: var(--negro-principal) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 0 25px rgba(96, 81, 155, 0.5) !important;
+}
+
+.swal2-title {
+  color: #e4e6eb !important;
+  font-family: 'Cal Sans', sans-serif !important;
+}
+
+.swal2-html-container {
+  color: #e4e6eb !important;
+}
+
+.swal2-confirm {
+  background-color: var(--violeta-principal) !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 10px 24px !important;
+  font-size: 16px !important;
+  transition: background 0.2s ease;
+}
+
+.swal2-confirm:hover {
+  background-color: #4e4280 !important;
+}
+
+.swal2-confirm:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.swal2-icon {
+  border-color: var(--violeta-principal) !important;
+  color: var(--violeta-principal) !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border-color: var(--violeta-principal) !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: var(--violeta-principal) !important;
+}
+
+.swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+  background-color: var(--violeta-principal) !important;
+}
+
+.swal2-icon.swal2-warning {
+  border-color: var(--violeta-principal) !important;
+  color: var(--violeta-principal) !important;
+}
+
+.swal2-loader {
+  border-color: var(--violeta-principal) transparent var(--violeta-principal) transparent !important;
+}
+
+/* FIX: Evita que SweetAlert2 añada padding al body */
+body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+  overflow: hidden !important;
+  padding-right: 0 !important;
+}
+
+body.swal2-height-auto {
+  height: 100vh !important;
 }

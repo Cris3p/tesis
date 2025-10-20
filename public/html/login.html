@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/login.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="icon" type="image/x-icon" href="../img/logo_blanco.png">
     <title>Inicia Sesión</title>
 </head>
 
@@ -15,7 +16,7 @@
         <nav class="navbarra">
             <div class="logo">OnTrack</div>
             <ul class="nav-links">
-                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="/">Inicio</a></li>
             </ul>
         </nav>
     </header>
@@ -25,8 +26,7 @@
         <div class="left">
             <form class="login-form" id="loginForm">
                 <h2>Iniciar Sesión</h2>
-                <p class="register-link">¿No tienes una cuenta? <a href="registro.html">Regístrate aquí</a></p>
-                <p class="register-link"><a href="#" id="olvide" class="olvide">¿Olvidaste tu contraseña?</a></p>
+                <p class="register-link">¿No tienes una cuenta? <a href="registro">Regístrate aquí</a></p>
                 <div class="usuario">
                     <label for="username"></label>
                     <input type="text" name="usuario" placeholder="Usuario o Email" required>
@@ -38,8 +38,8 @@
                     <i class='bx bxs-lock-alt' id="TpL"></i>
                 </div>
                 <button type="submit">Iniciar Sesión</button>
+                <p class="register-link"><a href="#" id="olvide" class="olvide">¿Olvidaste tu contraseña?</a></p>
             </form>
-
         </div>
         <div class="right">
         </div>
@@ -54,7 +54,7 @@
   </div>
 </div>
 </body>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../js/login.js"></script>
 
 </html>

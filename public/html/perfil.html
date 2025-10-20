@@ -5,78 +5,111 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/perfil.css" />
+  <link rel="icon" type="image/x-icon" href="../img/logo_blanco.png">
   <title>Mi Perfil</title>
 </head>
 
 <body>
   <header class="header">
-    <a class="logo" href="inicio.html">OnTrack</a>
+    <a class="logo" href="inicio">OnTrack</a>
     <div class="user-menu">
       <button id="userBtn">
         <img src="../img/user.png" alt="User Icon" />
       </button>
       <div id="dropdown" class="dropdown hidden">
-        <a href="perfil.html">Mi Perfil</a>
-        <a href="reportes.html">Reportes</a>
-        <a href="estadisticas.html">Estadísticas</a>
+        <a href="perfil">Mi Perfil</a>
+        <a href="reportes">Reportes</a>
+        <a href="estadisticas">Estadísticas</a>
       </div>
     </div>
   </header>
 
   <div class="contenedor-perfil">
-    <section class="formulario">
-      <h1>Editar Perfil</h1>
+    <div class="tabs-container">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="emergencia">Contacto</button>
+        <button class="tab-btn" data-tab="reportes">Reportes</button>
+        <button class="tab-btn" data-tab="configuracion">Configuración</button>
+      </div>
 
-      <h3>Modificar Nombre de Usuario</h3>
-      <form id="actualizar-Usuario-Form">
-        <input type="text" id="usuario" name="usuario" placeholder="Ingresa tu nuevo usuario" required />
-        <button type="submit" id="actualizar-Usuario">Actualizar Usuario</button>
-      </form>
+      <div class="tab-content-container">
 
-      <h3>Cambiar Contraseña</h3>
-      <form id="actualizar-Password-Form">
-        <input type="password" id="password" name="current-password" placeholder="Contraseña actual" required />
-        <input type="password" id="nueva-password" name="nueva-password" placeholder="Nueva contraseña" required />
-        <input type="password" id="confirmar-password" name="confirmar-password" placeholder="Confirmar contraseña"
-          required />
-        <button type="submit">Actualizar Contraseña</button>
-      </form>
+        <div class="tab-content active" id="emergencia">
+          <section class="formulario">
+            <h1>Contactos de Emergencia</h1>
+            <form id="contacto-emergencia-form">
+              <input type="text" id="nombre-input" placeholder="Nombre" required />
+              <input type="tel" id="contacto-input" placeholder="Número de teléfono" required />
+              <button type="submit">Agregar Contacto</button>
+            </form>
+            </form>
 
-      <h3>Darse de Baja</h3>
-      <p>Esta acción eliminará tu cuenta permanentemente.</p>
-      <form id="borrar-Cuenta-Form" class="form-eliminar">
-        <button type="submit" class="eliminar">Eliminar Cuenta</button>
-      </form>
-    </section>
+            <center>
+              <h3>Contactos Designados</h3>
+            </center>
+            <div id="lista-contactos"></div>
+          </section>
+        </div>
+
+        <div class="tab-content" id="reportes">
+          <section class="formulario">
+            <h1>Tus Reportes</h1>
+            <p>Revisa y administra los reportes que has enviado.</p>
+            <button id="ver-reportes-btn" class="ver-reportes-btn"><a href="historial">Ver Mis Reportes</a></button>
+          </section>
+        </div>
+
+        <div class="tab-content" id="configuracion">
+          <section class="formulario">
+            <h1>Configuración</h1>
+            <h4>Modificar Nombre de Usuario</h4>
+            <form id="actualizar-Usuario-Form">
+              <input type="text" id="usuario" name="usuario" placeholder="Ingresa tu nuevo usuario" required />
+              <button type="submit" id="actualizar-Usuario">Actualizar Usuario</button>
+            </form>
+
+            <h4>Cambiar Contraseña</h4>
+            <form id="actualizar-Password-Form">
+              <input type="password" id="password" name="current-password" placeholder="Contraseña actual" required />
+              <input type="password" id="nueva-password" name="nueva-password" placeholder="Nueva contraseña"
+                required />
+              <input type="password" id="confirmar-password" name="confirmar-password"
+                placeholder="Confirmar contraseña" required />
+              <button type="submit">Actualizar Contraseña</button>
+            </form>
+
+            <div class="zona-peligrosa">
+              <button class="zona-peligrosa-toggle" id="toggleZonaPeligrosa">
+                <span>Eliminar Cuenta y Cerrar Sesión</span>
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+
+              <div class="zona-peligrosa-content" id="zonaPeligrosaContent">
+
+                <h3>Cerrar Sesión</h3>
+                <p>Cierra tu sesión actual en este dispositivo.</p>
+                <button class="btn-cerrar-sesion" id="logoutBtn">Cerrar Sesión</button>
+
+                <h3>Eliminar Cuenta</h3>
+                <p>Esta acción eliminará tu cuenta permanentemente. No podrás recuperar tus datos.</p>
+                <form id="borrar-Cuenta-Form" class="form-eliminar">
+                  <button type="submit" class="eliminar">Eliminar Cuenta Definitivamente</button>
+                </form>
+              </div>
+            </div>
+
+          </section>
+        </div>
+
+      </div>
+    </div>
   </div>
-  <div class="contenedor-perfil">
-    <section class="formulario">
-      <h1>Designar Contacto de Emergencia</h1>
-      <form id="contacto-emergencia-form">
-        <input type="tel" id="contacto-input" name="contacto" placeholder="Número de contacto" pattern="[0-9]{7,15}"
-          required />
-        <button type="submit">Guardar Contacto</button>
-      </form>
-
-      <center>
-        <h3>Contactos Designados</h3>
-      </center>
-      <div id="lista-contactos"></div>
-    </section>
-  </div>
-
-  <script>
-    document.getElementById("userBtn").addEventListener("click", () => {
-      document.getElementById("dropdown").classList.toggle("hidden");
-    });
-
-    window.addEventListener("click", (e) => {
-      if (!e.target.closest(".user-menu")) {
-        document.getElementById("dropdown").classList.add("hidden");
-      }
-    });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../js/perfil.js"></script>
 
 </body>
+
 </html>

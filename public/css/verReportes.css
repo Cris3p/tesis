@@ -1,81 +1,322 @@
-/* body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f9;
-  padding: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+
+/* ---------------- PALETA OSCURA ---------------- */
+:root {
+  --negro-principal: #14121a;
+  --negro-secundario: #1f1c29;
+  --violeta-principal: #3e2c6d;
+  --violeta-oscuro: #2b1f52;
+  --violeta-vivo: #5b3ea1;
+  --violeta-claro: #8a75c9;
+  --texto: #e4e6eb;
+  --rojo: #d62839;
+  --rojo-oscuro: #b02030;
 }
 
-.reporte {
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.reporte h3 {
-  margin-top: 0;
-}
-
-.reporte.destacado {
-  border: 2px solid #9d4edd;
-  background: #f8f6fb;
-  box-shadow: 0 4px 12px rgba(157, 78, 221, 0.3);
-} */
-/* Estilos para el contenedor principal */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #1e1e2f; /* Fondo principal: negro suave */
-    color: #f0f0f0; /* Color del texto: blanco suave */
-    margin: 0;
-    padding: 20px;
+  font-family: 'Roboto Flex', sans-serif;
+  background: var(--negro-principal);
+  color: var(--texto);
+  padding: 40px 20px;
+  min-height: 100vh;
 }
 
-/* Título principal */
+/* ---------------- TÍTULO ---------------- */
 h1 {
-    text-align: center;
-    color: #7209b7; /* Violeta para el título */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: 'Cal Sans', sans-serif;
+  text-align: center;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--texto);
+  margin-bottom: 50px;
+  text-shadow: 0 0 20px rgba(91, 62, 161, 0.5);
+  animation: fadeInDown 0.6s ease;
 }
 
-/* Contenedor de reportes */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------- CONTENEDOR DE REPORTES ---------------- */
 #reportes-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  animation: fadeIn 0.8s ease;
 }
 
-/* Estilos para cada tarjeta de reporte */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------------- TARJETAS DE REPORTE ---------------- */
 .reporte {
-    background-color: #2a2a3e; /* Fondo de las tarjetas: negro/violeta oscuro */
-    border: 1px solid #444; /* Borde sutil */
-    border-radius: 8px;
-    padding: 20px;
-    width: 300px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    transition: transform 0.2s ease-in-out;
+  background: var(--negro-secundario);
+  border: 2px solid var(--violeta-principal);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .reporte:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 35px rgba(91, 62, 161, 0.3);
+  border-color: var(--violeta-vivo);
 }
 
-/* Estilos para el reporte destacado */
+/* ---------------- REPORTE DESTACADO ---------------- */
 .reporte.destacado {
-    background-color: #4b0082; /* Un morado más oscuro y único */
-    border: 2px solid #9d4edd; /* Borde de un morado suave para resaltarlo */
-    box-shadow: 0 0 15px #9d4edd; /* Resplandor morado suave */
-    transform: scale(1.05); /* Ligeramente más grande para que se note más */
+  background: linear-gradient(135deg, var(--violeta-oscuro) 0%, var(--violeta-principal) 100%);
+  border: 3px solid var(--violeta-vivo);
+  box-shadow: 0 0 30px rgba(91, 62, 161, 0.6), 0 12px 35px rgba(0, 0, 0, 0.5);
+  transform: scale(1.02);
+  animation: pulseGlow 2s infinite;
 }
 
-/* Otros estilos para el contenido de los reportes */
-h3 {
-    color: #fff;
-    margin-top: 0;
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(91, 62, 161, 0.4), 0 12px 35px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(91, 62, 161, 0.8), 0 12px 35px rgba(0, 0, 0, 0.5);
+  }
 }
 
-p {
-    margin: 8px 0;
+.reporte.destacado:hover {
+  transform: scale(1.05) translateY(-8px);
+}
+
+/* ---------------- HEADER DEL REPORTE ---------------- */
+.reporte-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--violeta-principal);
+}
+
+.reporte-icono {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.reporte-header h3 {
+  font-family: 'Cal Sans', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--texto);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ---------------- INFO DEL REPORTE ---------------- */
+.reporte-info {
+  margin: 20px 0;
+}
+
+.reporte-info p {
+  margin: 12px 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--texto);
+}
+
+.reporte-info strong {
+  color: var(--violeta-claro);
+  font-weight: 600;
+}
+
+.descripcion {
+  background: rgba(91, 62, 161, 0.1);
+  padding: 14px;
+  border-radius: 10px;
+  border-left: 4px solid var(--violeta-vivo);
+  margin-top: 15px !important;
+  font-style: italic;
+}
+
+/* ---------------- FOOTER DEL REPORTE ---------------- */
+.reporte-footer {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(91, 62, 161, 0.3);
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.badge-si {
+  background: rgba(91, 62, 161, 0.2);
+  border: 1px solid var(--violeta-vivo);
+  color: var(--violeta-claro);
+}
+
+.badge-no {
+  background: rgba(214, 40, 57, 0.2);
+  border: 1px solid var(--rojo);
+  color: #ff6b7a;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+
+  #reportes-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .reporte {
+    padding: 20px;
+  }
+
+  .reporte-header h3 {
+    font-size: 20px;
+  }
+
+  .reporte-icono {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 20px 10px;
+  }
+
+  h1 {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .reporte-info p {
+    font-size: 14px;
+  }
+
+  .badge {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* ---------------- ACCIONES DEL REPORTE ---------------- */
+.reporte-acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(91, 62, 161, 0.3);
+}
+
+.btn-editar,
+.btn-eliminar {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Roboto Flex', sans-serif;
+}
+
+.btn-editar {
+  background: var(--violeta-vivo);
+  color: var(--texto);
+  border: 2px solid var(--violeta-vivo);
+}
+
+.btn-editar:hover {
+  background: var(--violeta-principal);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(91, 62, 161, 0.4);
+}
+
+.btn-eliminar {
+  background: transparent;
+  color: var(--rojo);
+  border: 2px solid var(--rojo);
+}
+
+.btn-eliminar:hover {
+  background: var(--rojo);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(214, 40, 57, 0.4);
+}
+
+/* ---------------- MENSAJE VACÍO ---------------- */
+.mensaje-vacio {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--texto);
+  font-size: 18px;
+  background: var(--negro-secundario);
+  border-radius: 16px;
+  border: 2px dashed var(--violeta-principal);
+  max-width: 600px;
+  margin: 50px auto;
+}
+
+.mensaje-vacio::before {
+  content: '📭';
+  display: block;
+  font-size: 64px;
+  margin-bottom: 20px;
 }

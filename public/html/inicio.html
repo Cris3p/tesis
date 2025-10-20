@@ -1,53 +1,58 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OnTrack - Mapa Seguro</title>
   <link rel="stylesheet" href="../css/inicio.css">
-  <title>Inicio</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <link rel="icon" type="image/x-icon" href="../img/logo_blanco.png">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
 
   <div class="header">
+
+    <div class="search-header">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Buscar ubicación o destino..." />
+        <button id="searchBtn" class="search-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.134 17 3 13.866 3 10C3 6.134 6.134 3 10 3C13.866 3 17 6.134 17 10Z"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
     <span class="logo">OnTrack</span>
     <div class="user-menu">
-      <a href="#" id="logoutBtn">Cerrar Sesión</a>
       <button id="userBtn">
-        <img src="../img/user.png" alt="User Icon" class="avatar-img" />  
-        
+        <img src="../img/user.png" alt="User Icon" class="avatar-img" />
       </button>
       <div id="menuDropdown" class="dropdown hidden">
-        <a href="perfil.html">Mi Perfil</a>
-        <a href="reportes.html">Reportes</a>
-        <a href="estadisticas.html">Estadísticas</a>
+        <a href="perfil">Mi Perfil</a>
+        <a href="reportes">Reportes</a>
+        <a href="estadisticas">Estadísticas</a>
       </div>
     </div>
   </div>
 
   <div id="map"></div>
-  <button id="btnQuitar" onclick="quitarMarker2()" style="display:none">Quitar marcador</button>
+
+  <div class="filter-controls">
+    <div class="filter-buttons">
+      <button class="filter-btn" data-filter="comisarias">Comisarías</button>
+      <button class="filter-btn" data-filter="hospitales">Salas y Hospitales</button>
+    </div>
+    <button id="btnQuitar" onclick="quitarMarker2()" style="display:none">Quitar marcador</button>
+  </div>
+
   <button id="btn-emergencia">
-    <img src="../img/emergencia.png" alt="Emergencia Icon" class="emergencia" />
+    <img src="../img/emergencia2.png" alt="Emergencia Icon" class="emergencia" />
   </button>
-
-  <script>
-    document.getElementById("userBtn").addEventListener("click", () => {
-      document.getElementById("menuDropdown").classList.toggle("hidden");
-    });
-
-    window.addEventListener("click", (e) => {
-      if (!e.target.closest(".user-menu")) {
-        document.getElementById("menuDropdown").classList.add("hidden");
-      }
-    });
-  </script>
   
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="../js/inicio.js"></script>
 </body>
 </html>

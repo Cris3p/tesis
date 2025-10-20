@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
-
+/* reportes */
 /* ---------------- PALETA OSCURA ---------------- */
 :root {
   --negro-principal: #14121a;
@@ -348,3 +348,863 @@ button[type="submit"]:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(74, 62, 122, 0.5);
 }
+.location-center {
+    /* Define el tamaño y estilo del círculo exterior del GPS */
+    width: 25px; 
+    height: 25px;
+    border: 1px solid #fff; /* Borde blanco */
+    border-radius: 50%;
+    background-color:#3e2c6d; /* Color azul para ubicación actual */
+    /* Centra el marcador perfectamente en la coordenada */
+    transform: translate(-50%, -50%); 
+    
+    /* Efecto de pulso que imita la detección de ubicación */
+    box-shadow: 0 0 0 5px rgba(73, 9, 133, 0.4); 
+    animation: pulse 1.5s infinite;
+}
+
+
+.location-dot {
+    display: none; 
+}
+
+/* Animación de pulso para el marcador de GPS */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(95, 10, 134, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(141, 45, 145, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(87, 7, 107, 0);
+    }
+}
+
+.custom-marker2 {
+    width: 20px;
+    height: 20px;
+    background-color: var(--violeta-vivo); 
+    border-radius: 50%;
+    border: 1px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    transform: translate(-50%, -50%); 
+}
+.marker2-dot {
+    display: none;
+}
+
+/* ==================== RESPONSIVE DESIGN COMPLETO - REPORTES ==================== */
+
+/* ---------------- TABLETS Y LAPTOPS (768px - 1024px) ---------------- */
+@media (max-width: 1024px) {
+  .header {
+    height: 60px;
+  }
+
+  .logo {
+    font-size: 32px;
+    letter-spacing: 3px;
+  }
+
+  .user-menu {
+    right: 15px;
+    top: 12px;
+  }
+
+  .user-menu button {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-width: 2px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1/1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .user-menu button img {
+    border-radius: 50% !important;
+  }
+
+  .contenedor-formulario {
+    margin: 80px auto 30px auto;
+    max-width: 65%;
+    padding: 30px 35px;
+  }
+
+  .contenedor-formulario h1 {
+    font-size: 21px;
+    margin-bottom: 22px;
+    letter-spacing: 2.5px;
+  }
+
+  form label {
+    margin-top: 16px;
+    margin-bottom: 7px;
+    font-size: 14px;
+  }
+
+  form input,
+  form select,
+  form textarea {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-radius: 9px;
+  }
+
+  .ubicacion-input button {
+    padding: 13px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  #map {
+    height: 280px;
+    border-radius: 11px;
+  }
+
+  .opcion span {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  button[type="submit"] {
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 11px;
+  }
+}
+
+/* ---------------- TABLETS PEQUEÑAS (max-width: 900px) ---------------- */
+@media (max-width: 900px) {
+  .contenedor-formulario {
+    max-width: 75%;
+  }
+}
+
+/* ---------------- MÓVILES GRANDES (max-width: 768px) ---------------- */
+@media (max-width: 768px) {
+  .header {
+    height: 55px;
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .user-menu {
+    position: fixed;
+    right: 12px;
+    top: 10px;
+    z-index: 1100;
+  }
+
+  .user-menu button {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    border-width: 2px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1/1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .user-menu button:hover {
+    transform: scale(1.05);
+  }
+
+  .user-menu button img {
+    border-radius: 50% !important;
+  }
+
+  .dropdown {
+    min-width: 140px;
+    border-radius: 10px;
+    margin-top: 8px;
+  }
+
+  .dropdown a {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .contenedor-formulario {
+    margin: 70px auto 25px auto;
+    max-width: 90%;
+    padding: 25px 20px;
+    border-radius: 14px;
+  }
+
+  .contenedor-formulario h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+  }
+
+  form label {
+    margin-top: 14px;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
+  form input,
+  form select,
+  form textarea {
+    padding: 12px 14px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+
+  .ubicacion-input {
+    gap: 8px;
+  }
+
+  .ubicacion-input button {
+    padding: 12px;
+    border-radius: 9px;
+    font-size: 13px;
+  }
+
+  .sugerencias-lista {
+    max-height: 160px;
+    border-radius: 8px;
+  }
+
+  .sugerencias-lista::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sugerencias-lista li {
+    padding: 10px 13px;
+    font-size: 13px;
+  }
+
+  .contenido-mapa {
+    margin: 18px 0;
+  }
+
+  #map {
+    height: 260px;
+    border-radius: 10px;
+  }
+
+  .opcional {
+    margin-top: 8px;
+  }
+
+  .opcion-botones {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .opcion span {
+    padding: 11px 20px;
+    font-size: 13px;
+    border-radius: 35px;
+  }
+
+  button[type="submit"] {
+    margin-top: 25px;
+    padding: 13px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .leaflet-control-zoom a {
+    font-size: 18px !important;
+  }
+}
+
+/* ---------------- MÓVILES MEDIANOS (max-width: 600px) ---------------- */
+@media (max-width: 600px) {
+  .header {
+    height: 50px;
+  }
+
+  .user-menu {
+    right: 10px;
+    top: 8px;
+  }
+
+  .user-menu button {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    max-width: 34px !important;
+    max-height: 34px !important;
+    border-width: 1.5px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1/1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .user-menu button img {
+    border-radius: 50% !important;
+  }
+
+  .dropdown {
+    min-width: 130px;
+    right: -5px;
+  }
+
+  .dropdown a {
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+
+  .contenedor-formulario {
+    margin: 62px auto 20px auto;
+    max-width: 95%;
+    padding: 22px 18px;
+    border-radius: 12px;
+  }
+
+  .contenedor-formulario h1 {
+    font-size: 18px;
+    margin-bottom: 18px;
+    letter-spacing: 1.5px;
+  }
+
+  form label {
+    margin-top: 12px;
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+
+  form input,
+  form select,
+  form textarea {
+    padding: 11px 12px;
+    font-size: 12px;
+    border-radius: 7px;
+  }
+
+  .ubicacion-input {
+    gap: 7px;
+  }
+
+  .ubicacion-input button {
+    padding: 11px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .sugerencias-lista {
+    max-height: 140px;
+    border-radius: 7px;
+  }
+
+  .sugerencias-lista li {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  .contenido-mapa {
+    margin: 15px 0;
+  }
+
+  #map {
+    height: 240px;
+    border-radius: 9px;
+  }
+
+  .opcional {
+    margin-top: 7px;
+  }
+
+  .opcion-botones {
+    gap: 15px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .opcion span {
+    padding: 10px 18px;
+    font-size: 12px;
+    border-radius: 30px;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  button[type="submit"] {
+    margin-top: 22px;
+    padding: 12px;
+    font-size: 13px;
+    border-radius: 9px;
+  }
+
+  form textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+}
+
+/* ---------------- MÓVILES PEQUEÑOS (max-width: 480px) ---------------- */
+@media (max-width: 480px) {
+  .header {
+    height: 48px;
+  }
+
+  .user-menu {
+    right: 8px;
+    top: 7px;
+  }
+
+  .user-menu button {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    border-width: 1.5px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1/1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .user-menu button img {
+    border-radius: 50% !important;
+  }
+
+  .dropdown {
+    min-width: 120px;
+    border-radius: 9px;
+  }
+
+  .dropdown a {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .contenedor-formulario {
+    margin: 58px auto 18px auto;
+    max-width: 95%;
+    padding: 20px 15px;
+    border-radius: 11px;
+  }
+
+  .contenedor-formulario h1 {
+    font-size: 17px;
+    margin-bottom: 16px;
+    letter-spacing: 1.2px;
+  }
+
+  form label {
+    margin-top: 11px;
+    margin-bottom: 5px;
+    font-size: 11px;
+  }
+
+  form input,
+  form select,
+  form textarea {
+    padding: 10px 11px;
+    font-size: 11px;
+    border-radius: 6px;
+  }
+
+  form select {
+    background-size: 10px;
+  }
+
+  .ubicacion-input {
+    gap: 6px;
+  }
+
+  .ubicacion-input button {
+    padding: 10px;
+    border-radius: 7px;
+    font-size: 11px;
+  }
+
+  .sugerencias-lista {
+    max-height: 120px;
+    border-radius: 6px;
+  }
+
+  .sugerencias-lista::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .sugerencias-lista li {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .contenido-mapa {
+    margin: 12px 0;
+  }
+
+  #map {
+    height: 220px;
+    border-radius: 8px;
+  }
+
+  .opcional {
+    margin-top: 6px;
+  }
+
+  .opcion-botones {
+    gap: 12px;
+  }
+
+  .opcion span {
+    padding: 9px 16px;
+    font-size: 11px;
+    border-radius: 25px;
+    min-width: 110px;
+  }
+
+  button[type="submit"] {
+    margin-top: 20px;
+    padding: 11px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  .location-center {
+    width: 22px;
+    height: 22px;
+  }
+
+  .custom-marker2 {
+    width: 18px;
+    height: 18px;
+  }
+
+  .leaflet-control-zoom a {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 16px !important;
+    line-height: 28px !important;
+  }
+
+  form textarea {
+    min-height: 70px;
+  }
+}
+
+/* ---------------- MÓVILES MUY PEQUEÑOS (max-width: 360px) ---------------- */
+@media (max-width: 360px) {
+  .header {
+    height: 45px;
+  }
+
+  .user-menu {
+    right: 6px;
+    top: 6px;
+  }
+
+  .user-menu button {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    max-width: 30px !important;
+    max-height: 30px !important;
+    border-width: 1.5px !important;
+    border-radius: 50% !important;
+    aspect-ratio: 1/1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .user-menu button img {
+    border-radius: 50% !important;
+  }
+
+  .dropdown {
+    min-width: 110px;
+    border-radius: 8px;
+  }
+
+  .dropdown a {
+    padding: 9px 10px;
+    font-size: 11px;
+  }
+
+  .contenedor-formulario {
+    margin: 54px auto 15px auto;
+    max-width: 95%;
+    padding: 18px 12px;
+    border-radius: 10px;
+  }
+
+  .contenedor-formulario h1 {
+    font-size: 16px;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+
+  form label {
+    margin-top: 10px;
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+
+  form input,
+  form select,
+  form textarea {
+    padding: 9px 10px;
+    font-size: 10px;
+    border-radius: 5px;
+  }
+
+  form select {
+    background-size: 9px;
+  }
+
+  .ubicacion-input {
+    gap: 5px;
+  }
+
+  .ubicacion-input button {
+    padding: 9px;
+    border-radius: 6px;
+    font-size: 10px;
+  }
+
+  .sugerencias-lista {
+    max-height: 100px;
+    border-radius: 5px;
+  }
+
+  .sugerencias-lista li {
+    padding: 7px 9px;
+    font-size: 10px;
+  }
+
+  .contenido-mapa {
+    margin: 10px 0;
+  }
+
+  #map {
+    height: 200px;
+    border-radius: 7px;
+  }
+
+  .opcional {
+    margin-top: 5px;
+  }
+
+  .opcion-botones {
+    gap: 10px;
+  }
+
+  .opcion span {
+    padding: 8px 14px;
+    font-size: 10px;
+    border-radius: 22px;
+    min-width: 100px;
+  }
+
+  button[type="submit"] {
+    margin-top: 18px;
+    padding: 10px;
+    font-size: 11px;
+    border-radius: 7px;
+  }
+
+  .location-center {
+    width: 20px;
+    height: 20px;
+  }
+
+  .custom-marker2 {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* ---------------- LANDSCAPE MODE (orientación horizontal) ---------------- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .contenedor-formulario {
+    margin-top: 55px;
+    margin-bottom: 20px;
+  }
+
+  #map {
+    height: 180px;
+  }
+
+  .opcion-botones {
+    flex-direction: row;
+    gap: 15px;
+  }
+
+  button[type="submit"] {
+    margin-top: 15px;
+  }
+}
+
+/* ---------------- FIX PARA OVERFLOW Y ELEMENTOS ---------------- */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="time"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    .contenedor-formulario {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+}
+
+/* ---------------- ALTURA MUY PEQUEÑA ---------------- */
+@media (max-height: 600px) {
+  .contenedor-formulario {
+    margin-top: 60px;
+  }
+
+  #map {
+    height: 200px;
+  }
+
+  form label {
+    margin-top: 10px;
+  }
+}
+
+@media (max-height: 500px) {
+  #map {
+    height: 160px;
+  }
+
+  .contenedor-formulario {
+    margin-top: 50px;
+    padding: 15px;
+  }
+}
+
+/* ---------------- AJUSTES ESPECÍFICOS PARA iOS ---------------- */
+@supports (-webkit-touch-callout: none) {
+  input[type="date"],
+  input[type="time"] {
+    min-height: 44px;
+  }
+}
+
+/* ---------------- ACCESIBILIDAD TÁCTIL ---------------- */
+@media (max-width: 768px) {
+  .user-menu button,
+  .ubicacion-input button,
+  .opcion span,
+  button[type="submit"] {
+    min-height: 44px;
+  }
+}
+
+  /* === SweetAlert2 Personalizado === */
+
+    .swal2-container {
+      background: transparent !important;
+    }
+
+    .swal2-backdrop-show {
+      background: rgba(0, 0, 0, 0.8) !important;
+    }
+
+    @keyframes fadeInSwal {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .swal2-popup {
+      background-color: var(--negro-secundario) !important;
+      border: 1px solid var(--violeta-principal) !important;
+      outline: none !important;
+      box-shadow: 0 0 25px rgba(91, 62, 161, 0.6) !important;
+      border-radius: 16px !important;
+    }
+
+    .swal2-title {
+      color: var(--texto) !important;
+      font-family: 'Cal Sans', sans-serif !important;
+    }
+
+    .swal2-html-container {
+      color: var(--texto) !important;
+    }
+
+    .swal2-confirm {
+      background-color: var(--violeta-vivo) !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      color: white !important;
+      border-radius: 8px !important;
+      padding: 10px 24px !important;
+      font-size: 16px !important;
+      transition: background 0.2s ease;
+    }
+
+    .swal2-confirm:hover {
+      background-color: var(--violeta-principal) !important;
+    }
+
+    .swal2-confirm:focus {
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .swal2-icon {
+      border-color: var(--violeta-vivo) !important;
+      color: var(--violeta-vivo) !important;
+    }
+
+    .swal2-icon.swal2-success .swal2-success-ring {
+      border-color: var(--violeta-vivo) !important;
+    }
+
+    .swal2-icon.swal2-success [class^='swal2-success-line'] {
+      background-color: var(--violeta-vivo) !important;
+    }
+
+    .swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+      background-color: var(--violeta-vivo) !important;
+    }
+
+    .swal2-icon.swal2-warning {
+      border-color: var(--violeta-claro) !important;
+      color: var(--violeta-claro) !important;
+    }
+
+    .swal2-loader {
+      border-color: var(--violeta-vivo) transparent var(--violeta-vivo) transparent !important;
+    }
+
+    /* FIX: Evita que SweetAlert2 añada padding al body */
+    body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+      overflow: hidden !important;
+      padding-right: 0 !important;
+    }
+
+    body.swal2-height-auto {
+      height: 100vh !important;
+    }

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/registro.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <link rel="icon" type="image/x-icon" href="../img/logo_blanco.png">
   <title>Registrate</title>
 </head>
 
@@ -14,7 +15,7 @@
     <nav class="navbarra">
       <div class="logo">OnTrack</div>
       <ul class="nav-links">
-        <li><a href="inicio.html">Inicio</a></li>
+        <li><a href="/inicio">Inicio</a></li>
       </ul>
     </nav>
   </header>
@@ -23,7 +24,7 @@
     <div class="left">
       <form class="register-form" id="idForm">
         <h2>Registrarse</h2>
-        <p class="login-link">¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+        <p class="login-link">¿Ya tienes una cuenta? <a href="login">Inicia sesión aquí</a></p>
 
         <div class="usuario">
           <label for="username"></label>
@@ -42,8 +43,13 @@
           <input type="password" name="password" id="PsswRegis" placeholder="Contraseña" required>
           <i class='bx bxs-lock-alt' id="IconPsswRegis"></i>
         </div>
-
-
+        <div class="localidad">
+          <label for="localidad"></label>
+          <select id="localidad" name="localidad" required>
+            <option value="" disabled selected>Cargando Localidades/Ciudades...</option>
+          </select>
+          <i class='bx bxs-city'></i>
+        </div>
         <div class="fecha">
           <input type="date" id="fecha" name="fecha" required>
         </div>
@@ -67,12 +73,11 @@
       </form>
     </div>
     <div class="right">
-      <!-- muy importante no lo borren -->
-    </div>
+      </div>
 
   </div>
 </body>
-
-<script src="../js/registro.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../js/registro.js"></script> 
 
 </html>

@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
-
+/* perfil */
 /* ---------------- PALETA OSCURA ---------------- */
 :root {
   --negro-principal: #14121a;
@@ -10,6 +10,7 @@
   --violeta-claro: #8a75c9;
   --texto: #e4e6eb;
   --rojo: #d62839;
+  --rojo-oscuro: #b02030;
 }
 
 * {
@@ -114,17 +115,90 @@ body, html {
   display: none;
 }
 
-/* ---------------- FORMULARIO ---------------- */
+/* ---------------- CONTENEDOR PERFIL ---------------- */
 .contenedor-perfil {
   margin: 90px auto 40px auto;
   max-width: 55%;
   background: var(--negro-secundario);
-  padding: 35px 45px;
   border-radius: 16px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
   border: 1px solid var(--violeta-principal);
+  overflow: hidden;
 }
 
+/* ---------------- SISTEMA DE PESTAÑAS ---------------- */
+.tabs-container {
+  width: 100%;
+}
+
+.tabs {
+  display: flex;
+  background: var(--negro-principal);
+  border-bottom: 2px solid var(--violeta-principal);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 18px 20px;
+  background: transparent;
+  border: none;
+  color: var(--texto);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-family: 'Roboto Flex', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.tab-btn:hover {
+  background: var(--violeta-oscuro);
+  color: var(--violeta-claro);
+}
+
+.tab-btn.active {
+  background: var(--violeta-principal);
+  color: var(--texto);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--violeta-vivo);
+}
+
+/* ---------------- CONTENIDO DE PESTAÑAS ---------------- */
+.tab-content-container {
+  min-height: 400px;
+}
+
+.tab-content {
+  display: none;
+  padding: 35px 45px;
+  animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------- FORMULARIO ---------------- */
 .formulario {
   display: flex;
   flex-direction: column;
@@ -185,7 +259,7 @@ form input:focus {
 
 form button,
 button[type="submit"],
-.form-eliminar button {
+.ver-reportes-btn {
   width: 100%;
   padding: 15px;
   margin-top: 10px;
@@ -200,12 +274,32 @@ button[type="submit"],
 }
 
 form button:hover,
-button[type="submit"]:hover,
-.form-eliminar button:hover {
+button[type="submit"]:hover {
   background: var(--violeta-principal);
 }
 
+.ver-reportes-btn a {
+  text-decoration: none;
+  color: aliceblue;
+}
+
 /* ---------------- LISTA DE CONTACTOS ---------------- */
+.sin-contactos {
+  background: var(--negro-principal);
+  padding: 30px 20px;
+  border-radius: 10px;
+  border: 1px dashed var(--violeta-principal);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.sin-contactos p {
+  color: var(--violeta-claro);
+  font-size: 15px;
+  font-style: italic;
+  margin: 0;
+}
+
 #lista-contactos > div {
   background: var(--negro-principal);
   padding: 14px 18px;
@@ -217,8 +311,39 @@ button[type="submit"]:hover,
   margin-bottom: 10px;
 }
 
+.contacto-item {
+  transition: border-color 0.2s ease;
+}
+
+.contacto-item:hover {
+  border-color: var(--violeta-vivo);
+}
+
+.contacto-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contacto-nombre {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--texto);
+}
+
+.contacto-telefono {
+  font-size: 14px;
+  color: #aaa;
+}
+
+.contacto-acciones {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#lista-contactos .btn-editar,
 #lista-contactos .btn-eliminar {
-  background: var(--violeta-vivo);
   border: none;
   color: var(--texto);
   padding: 8px 14px;
@@ -226,9 +351,214 @@ button[type="submit"]:hover,
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  transition: background 0.3s;
+  transition: all 0.3s;
+}
+
+#lista-contactos .btn-editar {
+  background: var(--violeta-principal);
+}
+
+#lista-contactos .btn-editar:hover {
+  background: var(--violeta-vivo);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(91, 62, 161, 0.3);
+}
+
+#lista-contactos .btn-eliminar {
+  background: var(--rojo);
 }
 
 #lista-contactos .btn-eliminar:hover {
+  background: var(--rojo-oscuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(214, 40, 57, 0.3);
+}
+
+/* Estilos para los inputs de SweetAlert2 */
+.swal2-input {
+  width: 85% !important;
+  padding: 12px !important;
+  margin: 8px auto !important;
+  border: 1px solid var(--violeta-principal) !important;
+  border-radius: 8px !important;
+  background: var(--negro-principal) !important;
+  color: var(--texto) !important;
+  font-size: 15px !important;
+}
+
+.swal2-input:focus {
+  border-color: var(--violeta-vivo) !important;
+  box-shadow: 0 0 6px rgba(91, 62, 161, 0.6) !important;
+  outline: none !important;
+}
+/* ---------------- CONFIGURACIÓN ---------------- */
+.config-option {
+  background: var(--negro-principal);
+  padding: 16px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--violeta-principal);
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+}
+
+.config-option:hover {
+  border-color: var(--violeta-vivo);
+}
+
+.config-option label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.config-option input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--violeta-vivo);
+}
+
+.config-option span {
+  font-size: 15px;
+  color: var(--texto);
+}
+
+/* ---------------- ZONA PELIGROSA (VIOLETA) ---------------- */
+.zona-peligrosa {
+  margin-top: 40px;
+  border: 2px solid var(--violeta-vivo);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(91, 62, 161, 0.05);
+}
+
+.zona-peligrosa-toggle {
+  width: 100%;
+  padding: 18px 20px;
+  background: rgba(91, 62, 161, 0.1);
+  border: none;
+  color: var(--violeta-vivo);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  font-family: 'Roboto Flex', sans-serif;
+}
+
+.zona-peligrosa-toggle:hover {
+  background: rgba(91, 62, 161, 0.15);
+}
+
+.zona-peligrosa-toggle .chevron {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.zona-peligrosa-toggle.open .chevron {
+  transform: rotate(180deg);
+}
+
+.zona-peligrosa-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+  padding: 0 20px;
+  background: var(--negro-principal);
+}
+
+.zona-peligrosa-content.open {
+  max-height: 800px;
+  padding: 25px 20px;
+}
+
+.zona-peligrosa-warning {
+  background: rgba(91, 62, 161, 0.1);
+  border-left: 4px solid var(--violeta-vivo);
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.zona-peligrosa-warning p {
+  font-size: 14px;
+  color: var(--texto);
+  margin: 0;
+}
+
+.zona-peligrosa-content h3 {
+  color: var(--violeta-vivo);
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.zona-peligrosa-content p {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 12px;
+}
+
+.btn-cerrar-sesion {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  margin-bottom: 20px;
+  border: 2px solid var(--violeta-vivo);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--violeta-vivo);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Roboto Flex', sans-serif;
+}
+
+.btn-cerrar-sesion:hover {
+  background: var(--violeta-vivo);
+  color: white;
+}
+
+.form-eliminar {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.form-eliminar button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--violeta-vivo);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Roboto Flex', sans-serif;
+}
+
+.form-eliminar button:hover {
   background: var(--violeta-principal);
+  transform: scale(1.02);
+}
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 768px) {
+  .contenedor-perfil {
+    max-width: 90%;
+  }
+
+  .tab-content {
+    padding: 25px 20px;
+  }
+
+  .tab-btn {
+    font-size: 14px;
+    padding: 15px 10px;
+  }
 }
