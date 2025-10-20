@@ -15,12 +15,12 @@ dotenv.config();
 
 // Configuración del transporte SMTP usando nodemailer
 const transporte = nodemailer.createTransport({
-  host: "smtp.sendgrid.net" || process.env.MAIL_HOST, // tu servidor SMTP local
-  port: 587, // puerto STARTTLS
-  secure: false, // STARTTLS usa false
+  host: process.env.MAIL_HOST,
+  port: 465,                     // CAMBIO: Usar puerto seguro
+  secure: true,                  // CAMBIO: Activar modo seguro (SSL/TLS)
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.SENDGRID_API_KEY,
+    pass: process.env.SENDGRID_API_KEY
   },
 });
 
