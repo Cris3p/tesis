@@ -1,4 +1,13 @@
 const estadisticasModel = require("../models/estadisticasModel");
+const Peach = require("../../lib/peach/Peach.js");
+exports.show = (req, res) => {
+    try {
+        const view = new Peach("estadisticas");
+        res.status(200).send(view.bufferTpl);
+    } catch (error) {
+        res.status(404).send('Página no encontrada');
+    }
+}
 
 exports.obtenerDatosMapa = async (req, res) => {
   try {
@@ -41,6 +50,17 @@ exports.obtenerLocalidades = async (req, res) => {
   }
 };
 
+exports.obtenerDepartamentos = async (req, res) => {
+  try {
+    const provincia = req.params.provincia;
+    const datos = await estadisticasModel.obtenerDepartamentosConEstadisticas(provincia);
+    res.json(datos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.obtenerReportes = async (req, res) => {
   try {
     const offset = Number(req.query.offset) || 0;
@@ -61,5 +81,15 @@ exports.obtenerReportes = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error al obtener reportes recientes" });
+  }
+};
+
+exports.obtenerTendencias = async (req, res) => {
+  try {
+    const data = await estadisticasModel.obtenerTendencias();
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error al obtener tendencias" });
   }
 };

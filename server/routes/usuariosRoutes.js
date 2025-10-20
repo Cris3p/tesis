@@ -15,7 +15,8 @@ router.post('/Cambiarpssw', usuariosController.confirmarResetPassword);
 //rutas del crud y proteccion con cookies:
 router.put('/actualizarPassword', usuariosController.revisarCookie ,usuariosController.actualizarPassword);
 router.put('/actualizarUsuario', usuariosController.revisarCookie ,usuariosController.actualizarUsuario);
-router.delete('/eliminar', usuariosController.revisarCookie ,usuariosController.eliminarCuenta);
+// El middleware revisa la cookie y pone el ID en req.idUsuario, que el controller usará.
+router.delete('/eliminar', usuariosController.revisarCookie ,usuariosController.eliminarCuenta); 
 
 
 module.exports = router;

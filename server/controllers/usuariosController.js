@@ -22,13 +22,23 @@ exports.getAllUsuarios = async (req, res) => {
     }
 };
 
+// MODIFICADO: Añadido 'localidad' y la verificación de existencia del usuario
 exports.setUsuarios = async (req, res) => {
     try {
-        const { usuario, email, password, fecha, genero } = req.body;
+        // CORRECCIÓN: Se desestructura 'localidad'
+        const { usuario, email, password, fecha, genero, localidad } = req.body; 
 
-        const userData = { usuario, email, password, fecha, genero };
+        // 1. Verificar si el usuario ya existe
+        const userExist = await usuarios.getUsuarioByEmailOrUsuario(email);
 
-        // Creamos el token JWT con los datos del usuario
+        if (userExist.length > 0) {
+            return res.status(409).json({ message: 'El correo electrónico o usuario ya están registrados.' });
+        }
+
+        // CORRECCIÓN: Se añade 'localidad' al objeto que se firma en el token
+        const userData = { usuario, email, password, fecha, genero, localidad }; 
+
+        // Creamos el token JWT con los datos del usuario para el proceso de verificación
         const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: '15m' });
 
         // Enviamos el correo con el token
@@ -41,21 +51,29 @@ exports.setUsuarios = async (req, res) => {
     }
 };
 
+// MODIFICADO: Ahora maneja 'localidad' al verificar y guardar
 exports.verificarUsuario = async (req, res) => {
     try {
         const { token } = req.params;
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const { usuario, email, password, fecha, genero } = decoded;
+        // CORRECCIÓN: Se desestructura 'localidad' del token decodificado
+        const { usuario, email, password, fecha, genero, localidad } = decoded; 
 
-        // Hasheamos la contraseña antes de guardarla en la DB
+        // Chequear si el usuario ya fue verificado para evitar duplicados/errores
+        const userExist = await usuarios.getUsuarioByEmailOrUsuario(email);
+        if (userExist.length > 0 && userExist[0].verificado === 1) {
+            return res.redirect('/html/login.html?verificado=true');
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
 
-        // Guardamos el usuario en la base de datos AHORA
-        const result = await usuarios.setUsuarios(usuario, email, hashPassword, fecha, genero);
+        // CORRECCIÓN: Se pasa 'localidad' al modelo para guardarlo
+        const result = await usuarios.setUsuarios(usuario, email, hashPassword, fecha, genero, localidad); 
 
-        if (result.affectedRows > 0) {
+        if (result.insertId) {
+            // Si la inserción fue exitosa, no hace falta verificar (ya se guardó como verificado)
             return res.redirect('/html/login.html?verificado=true');
         } else {
             return res.status(500).send('Error al verificar y guardar el usuario.');
@@ -71,60 +89,6 @@ exports.verificarUsuario = async (req, res) => {
     }
 };
 
-//no se borra por el momento
-// exports.setUsuarios = async (req, res) => {
-
-//     try {
-//         const { usuario, email, password, fecha, genero } = req.body;
-
-//         // Creamos un objeto con los datos del usuario
-//         const userData = { usuario, email, password, fecha, genero };
-
-//         // Creamos el token JWT con los datos del usuario
-//         const token = jwt.sign(userData, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-
-//         // Enviamos el correo con el token
-//         await enviarverificacion(email, token);
-
-//         // Enviamos una respuesta exitosa, pero sin guardar en la DB todavía
-//         res.status(200).json({ message: 'Se ha enviado un correo de verificación. Por favor, revisa tu bandeja de entrada.' });
-//     } catch (error) {
-//         console.error('Error al iniciar el proceso de registro:', error);
-//         res.status(500).json({ error: 'Error al iniciar el proceso de registro' });
-//     }
-// };
-
-
-// //enviar correo de verificacion
-// exports.verificarUsuario = async (req, res) => {
-//     try {
-//         const token = req.params.token;
-
-//         // Verifica y decodifica el token. Si el token es inválido o expiró, lanzará un error.
-//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-//         // Guarda al usuario en la base de datos
-//         const result = await usuarios.setUsuarios(
-//             usuario,
-//             email,
-//             decoded.password,
-//             fecha,
-//             genero
-//         );
-
-//         if (result.affectedRows === 0) {
-//              return res.status(404).send('No se pudo verificar la cuenta. Intente registrarse de nuevo.');
-//         }
-
-//         // Redirige al login con un mensaje de éxito
-//         res.status(200).redirect('/html/login.html?verificado=true');
-
-//     } catch (error) {
-//         console.error('Error al verificar el token:', error);
-//         res.status(400).send('Token de verificación inválido o expirado. Por favor, regístrate de nuevo.');
-//     }
-// };
-
 // iniciar sesion por email o usuario
 exports.loginUsuario = async (req, res) => {
     try {
@@ -133,35 +97,34 @@ exports.loginUsuario = async (req, res) => {
         const userRows = await usuarios.getUsuarioByEmailOrUsuario(usuario);
         const user = userRows[0];
 
+        if (!user) {
+            return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+        }
+
         const cont = await bcrypt.compare(password, user.password);
 
         if (!cont) {
             return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
         }
+        
+        // Verifica si el usuario fue verificado por email
+        if (user.verificado !== 1) {
+            return res.status(401).json({ error: 'Tu cuenta aún no ha sido verificada. Revisa tu email.' });
+        }
 
-        const token = jwt.sign({ id: user.id_usuario }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: user.ID_usuarios }, process.env.JWT_SECRET, {
             expiresIn: process.env.COOKIE_EXPIRES + 'd' // La cookie expira en X días (definido en .env)
         });
 
         res.cookie('jwt', token, cookieOption);
-        if (!user) {
-            return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
-        }
-
-        // // Asumiendo que la columna 'verificado' existe
-        // if (user.verificado === 0) {
-        //     console.log('6. Usuario no verificado, enviando error JSON.');
-        //     return res.status(401).json({ error: 'Por favor, verifica tu cuenta a través del correo electrónico.' });
-        // }
-
+        
         res.status(200).json({
             message: 'Inicio de sesión exitoso',
-            usuario: { id: user.id_usuario, email: user.email, usuario: user.usuario }
+            usuario: { id: user.ID_usuarios, email: user.email, usuario: user.usuario }
         });
 
     } catch (error) {
         console.error('Error al iniciar sesión:', error);
-        // Asegura que en caso de error interno, también envías JSON
         res.status(500).json({ error: 'Error del servidor al iniciar sesión' });
     }
 };
@@ -194,9 +157,7 @@ exports.actualizarPassword = async (req, res) => {
     try {
         const { nuevaPassword } = req.body;
         const id = req.idUsuario;
-        console.log("ID recibido para actualizar:", id);
-
-
+        
         const result = await usuarios.actualizarPassword(nuevaPassword, id);
 
         if (result.affectedRows === 0) {
@@ -210,20 +171,36 @@ exports.actualizarPassword = async (req, res) => {
     }
 }
 
-//elimina el usuario
+// FUNCIÓN DE ELIMINACIÓN CORREGIDA Y COMPLETA
 exports.eliminarCuenta = async (req, res) => {
     try {
-        const { id } = req.body;
-        console.log("ID recibido para eliminar:", id);
+        // CLAVE: Usamos el ID del usuario autenticado (del token JWT)
+        const id = req.idUsuario; 
+
+        if (!id) {
+            return res.status(401).json({ error: 'No autorizado. ID de sesión no encontrado.' });
+        }
+        
+        // Limpiamos la cookie inmediatamente para desloguear al cliente
+        res.clearCookie('jwt'); 
+
         const result = await usuarios.eliminarCuenta(id);
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Usuario no encontrado' });
+            return res.status(404).json({ error: 'Usuario no encontrado en la base de datos.' });
         }
 
-        res.status(200).json({ message: 'Usuario eliminado exitosamente' });
+        res.status(200).json({ message: 'Usuario eliminado exitosamente y sesión cerrada.' });
     } catch (error) {
         console.error('Error al eliminar el usuario:', error);
+        
+        // Si el error es una restricción de clave foránea (el principal problema)
+        if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+             return res.status(409).json({ 
+                error: 'Error de base de datos: La cuenta tiene datos relacionados (reportes) que bloquean la eliminación. Debes configurar ON DELETE CASCADE en la clave foránea de la tabla "reportes".' 
+            });
+        }
+        
         res.status(500).json({ error: 'Error al eliminar el usuario' });
     }
 }
@@ -249,10 +226,8 @@ exports.revisarCookie = async (req, res, next) => {
 
 exports.logoutUsuario = (req, res) => {
     try {
-        // La clave es `jwt` porque así la nombramos al iniciar sesión
         res.clearCookie('jwt');
 
-        // Puedes enviar un mensaje de éxito para que el cliente lo reciba
         res.status(200).json({ message: 'Sesión cerrada correctamente.' });
 
     } catch (error) {
@@ -265,21 +240,18 @@ exports.solicitarResetPassword = async (req, res) => {
     try {
         const { email } = req.body;
 
-        // Verificar si el usuario existe
         const userRows = await usuarios.getUsuarioByEmailOrUsuario(email);
         const user = userRows[0];
         if (!user) {
             return res.status(404).json({ error: 'No existe un usuario con ese correo' });
         }
 
-        // Crear token JWT corto con el ID del usuario
         const token = jwt.sign(
-            { id: user.id_usuario },
+            { id: user.ID_usuarios },
             process.env.JWT_SECRET,
             { expiresIn: '15m' }
         );
 
-        // Enviar correo de recuperación con el token
         await enviarResetPassword(email, token);
 
         res.json({ ok: true, msg: 'Correo de recuperación enviado' });
@@ -295,13 +267,11 @@ exports.confirmarResetPassword = async (req, res) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Buscar usuario por ID del token
         const user = await usuarios.getUsuarioById(decoded.id);
         if (!user) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
-        // Actualizar contraseña
         const result = await usuarios.actualizarPassword(nuevaPassword, decoded.id);
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -313,7 +283,6 @@ exports.confirmarResetPassword = async (req, res) => {
         if (error.name === 'TokenExpiredError') {
             return res.status(400).json({ error: 'Token expirado, vuelve a solicitar recuperación' });
         }
-
         if (error.name === 'JsonWebTokenError') {
             return res.status(400).json({ error: 'Token inválido' });
         }

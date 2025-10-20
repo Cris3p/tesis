@@ -5,6 +5,9 @@ const reportesController = require("../controllers/reportesController");
 router.post("/generar", reportesController.generarReporte);
 router.get("/getall", reportesController.obtenerReportes);
 
-// Nueva ruta para ver un solo reporte por su ID
-router.get("/:id_reporte", reportesController.obtenerReportePorId); 
+router.get("/usuario/:id", reportesController.obtenerReportesPorUsuario);
+router.get("/:id", reportesController.obtenerReportePorId);
+router.put("/actualizar/:id", reportesController.actualizarReporte); 
+router.delete("/eliminar/:id", reportesController.eliminarReporte);
+
 module.exports = router;

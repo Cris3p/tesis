@@ -218,27 +218,161 @@ export async function enviarResetPassword(direccion, token) {
 
 function crearMailResetPassword(token) {
   return `
-  <!DOCTYPE html>
-  <html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <title>Restablecer contraseña - ONTRACK</title>
-  </head>
-  <body style="font-family: Arial, sans-serif; background:#f4f4f9; color:#333;">
-    <div style="max-width:600px; margin:auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
-      <h2 style="color:#6a0dad;">Restablecimiento de contraseña</h2>
-      <p>Recibimos una solicitud para restablecer tu contraseña en <strong>ONTRACK</strong>.</p>
-      <p>Haz clic en el siguiente botón para continuar:</p>
-      <p style="text-align:center; margin:20px 0;">
-        <a href="http://localhost:3000/html/NuevaContraseña.html?token=${token}" 
-           style="background:#6a0dad; color:#fff; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:bold;">
-           Crear nueva contraseña
-        </a>
-      </p>
-      <p>Si no solicitaste este cambio, puedes ignorar este mensaje.</p>
-      <p>El enlace expirará en 15 minutos por tu seguridad.</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Restablecer contraseña - ONTRACK</title>
+  <style>
+    /* ==== Estilos base === */
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      border-top: 5px solid #8a2be2;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    h2 {
+      color: #6c3eb8;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 15px;
+      color: #444;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: #6c3eb8;
+      color: #ffffff !important;
+      padding: 12px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .button:hover {
+      background-color: #5a2fa0;
+      transform: translateY(-2px);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-top: 30px;
+    }
+
+    /* ==== Responsive === */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 20px;
+      }
+      .button {
+        display: block;
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    /* ==== MODO OSCURO === */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #ddd;
+      }
+      .container {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.05);
+        border-top: 5px solid #9d63f8;
+      }
+      h2 {
+        color: #b78aff;
+      }
+      p {
+        color: #ccc;
+      }
+      .button {
+        background-color: #9d63f8;
+        color: #fff !important;
+      }
+      .button:hover {
+        background-color: #8449e0;
+      }
+      .footer {
+        color: #aaa;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔐 Restablecimiento de Contraseña</h2>
+    <p>Hola,</p>
+    <p>Recibimos una solicitud para restablecer tu contraseña en <strong>ONTRACK</strong>. Si fuiste tú, haz clic en el siguiente botón para crear una nueva contraseña:</p>
+
+    <p style="text-align: center; margin: 25px 0;">
+      <a href="http://localhost:3000/html/NuevaContraseña.html?token=${token}" class="button">Crear nueva contraseña</a>
+    </p>
+
+    <p>Si no solicitaste este cambio, ignora este mensaje. Tu cuenta seguirá segura.</p>
+    <p>Por seguridad, este enlace expirará en <strong>15min</strong>.</p>
+
+    <div class="footer">
+      © 2025 ONTRACK — Seguridad y confianza para todos.<br>
+      Este es un correo automático, por favor no respondas a esta dirección.
     </div>
-  </body>
-  </html>
+  </div>
+</body>
+</html>
+  `;
+}
+
+export async function enviarContacto(nombre, email, asunto, mensaje) {
+  try {
+    await transporte.sendMail({
+      from: "ONTRACK <no-reply@ontrack0010.com>",
+      to: "ontrack0010@gmail.com", // Correo que recibe los mensajes del formulario
+      replyTo: email, // Permite responder directamente al usuario
+      subject: `Nuevo mensaje de contacto: ${asunto}`,
+      html: crearMailContacto(nombre, email, asunto, mensaje),
+    });
+
+    console.log(`✅ Mensaje de contacto recibido de ${email}`);
+  } catch (error) {
+    console.error("❌ Error al enviar correo de contacto:", error);
+    throw error;
+  }
+}
+
+function crearMailContacto(nombre, email, asunto, mensaje) {
+  return `
+    <h2>Nuevo mensaje de contacto</h2>
+    <p><strong>Nombre:</strong> ${nombre}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>Asunto:</strong> ${asunto}</p>
+    <p><strong>Mensaje:</strong></p>
+    <p>${mensaje}</p>
   `;
 }
