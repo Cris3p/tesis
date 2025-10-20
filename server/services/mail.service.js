@@ -50,11 +50,7 @@ function crearMailVerificacion(token) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  media-src 'self' data:;
-  connect-src 'self' http://localhost:3000;
-">
+ 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -118,7 +114,6 @@ function crearMailNotificacion(reporte) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http://localhost:3000">
   <title>Nuevo Reporte de Crimen</title>
   <style>
     
@@ -214,6 +209,7 @@ export async function enviarResetPassword(direccion, token) {
 }
 
 function crearMailResetPassword(token) {
+  const resetLink = `${process.env.BASE_URL}/html/NuevaContraseña.html?token=${token}`;
   return `
 <!DOCTYPE html>
 <html lang="es">
@@ -330,7 +326,7 @@ function crearMailResetPassword(token) {
     <p>Recibimos una solicitud para restablecer tu contraseña en <strong>ONTRACK</strong>. Si fuiste tú, haz clic en el siguiente botón para crear una nueva contraseña:</p>
 
     <p style="text-align: center; margin: 25px 0;">
-      <a href="http://localhost:3000/html/NuevaContraseña.html?token=${token}" class="button">Crear nueva contraseña</a>
+      <a href="${resetLink}" class="button">Crear nueva contraseña</a>
     </p>
 
     <p>Si no solicitaste este cambio, ignora este mensaje. Tu cuenta seguirá segura.</p>
