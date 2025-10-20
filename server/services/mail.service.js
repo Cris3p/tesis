@@ -119,6 +119,7 @@ function crearMailNotificacion(reporte) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
   <title>Nuevo Reporte de Crimen</title>
   <style>
     
