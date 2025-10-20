@@ -28,7 +28,7 @@ app.use('/reportes', reportesRoutes);
 app.use('/contactos', contactosRoutes);
 app.use('/usuarios', usuariosRoutes);
 app.use('/estadisticas', estadisticasRoutes);
-app.use('/', soporteRoutes);
+app.use('/soporte', soporteRoutes);
 
 
 function handleController(section, req, res) {
