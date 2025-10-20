@@ -8,7 +8,7 @@ const cookieOption = {
     expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000), // La cookie expira en X días (definido en .env)
     path: '/', // La cookie es accesible desde cualquier ruta
     httpOnly: true, // La cookie no es accesible desde el JavaScript del cliente (seguridad)
-    secure: false, // La cookie solo se envía con HTTP (en desarrollo, poner en true en producción con HTTPS)
+    secure: true, // La cookie solo se envía con HTTP (en desarrollo, poner en true en producción con HTTPS)
     sameSite: 'Lax' // Previene ataques de falsificación de solicitudes entre sitios (CSRF)
 };
 
