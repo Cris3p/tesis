@@ -15,6 +15,20 @@ app.use(express.json()); // Permite a Express leer JSON en el cuerpo de las peti
 app.use(cookieParser()); // Habilita el manejo de cookies
 app.use(express.static(path.join(__dirname, '../public'))); // Sirve archivos estáticos (HTML, CSS, JS)
 
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; " +
+      "script-src 'self' https://unpkg.com https://cdn.jsdelivr.net; " +
+      "style-src 'self' https://unpkg.com https://fonts.googleapis.com; " +
+      "font-src 'self' https://unpkg.com https://fonts.gstatic.com; " +
+      "img-src 'self' data: https://unpkg.com https://cdn.jsdelivr.net; " +
+      "connect-src 'self';"
+  );
+  next();
+});
+
+
 // Importación de rutas
 const usuariosRoutes = require('./routes/usuariosRoutes')
 const contactosRoutes = require('./routes/contactosRoutes');
