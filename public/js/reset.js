@@ -110,10 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      const res = await fetch('/usuarios/Cambiarpssw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, nuevaPassword: newPass })
+      const res = await fetch("/usuarios/Cambiarpssw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, nuevaPassword: newPass }),
       });
 
       Swal.close();

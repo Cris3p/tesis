@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Enviando solicitud a:', 'http://localhost:3000/usuarios/login');
       console.log('Datos enviados:', JSON.stringify(data));
       
-      const res = await fetch('/usuarios/login', {
+      const res = await fetch('/usuarios/solicitud', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
