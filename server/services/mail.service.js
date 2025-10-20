@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 dotenv.config();
 
 //por el momento esto es en produccion
@@ -15,16 +15,16 @@ dotenv.config();
 
 // Configuración del transporte SMTP usando nodemailer
 const transporte = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,   // tu servidor SMTP local
-  port: 587,                     // puerto STARTTLS
-  secure: false,                 // STARTTLS usa false
+  host: process.env.MAIL_HOST, // tu servidor SMTP local
+  port: 465, // puerto STARTTLS
+  secure: true, // STARTTLS usa false
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS
+    pass: process.env.MAIL_PASS,
   },
-  tls: {
-    rejectUnauthorized: false    // ignora certificados autofirmados
-  }
+  // tls: {
+  //   rejectUnauthorized: false, // ignora certificados autofirmados
+  // },
 });
 
 // No es neceasario mostrarlo por si acaso
@@ -53,11 +53,7 @@ function crearMailVerificacion(token) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  media-src 'self' data:;
-  connect-src 'self' http://localhost:3000;
-">
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -102,13 +98,15 @@ export async function enviarNotificacionReporte(destinatarios, reporte) {
   try {
     const mailOptions = {
       from: "ONTRACK <no-reply@ontrack0010.com>",
-      to: destinatarios.join(','), // Separa los correos con comas
+      to: destinatarios.join(","), // Separa los correos con comas
       subject: `¡Nuevo Reporte de Crimen en tu área!`,
       html: crearMailNotificacion(reporte),
     };
 
     await transporte.sendMail(mailOptions);
-    console.log("Notificación de reporte enviada exitosamente a todos los usuarios.");
+    console.log(
+      "Notificación de reporte enviada exitosamente a todos los usuarios."
+    );
   } catch (error) {
     console.error("Error al enviar la notificación de reporte:", error);
     throw error;
@@ -121,7 +119,6 @@ function crearMailNotificacion(reporte) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' http://localhost:3000">
   <title>Nuevo Reporte de Crimen</title>
   <style>
     
@@ -161,15 +158,25 @@ function crearMailNotificacion(reporte) {
 
           <!-- Caja de datos -->
           <div style="background-color:#f8f6fb; border-left:5px solid #9b5de5; padding:15px 20px; margin:20px 0; border-radius:6px;">
-            <p style="margin:6px 0;"><strong>Tipo de Crimen:</strong> ${reporte.tipo_crimen}</p>
-            <p style="margin:6px 0;"><strong>Ubicación:</strong> ${reporte.localidad}, ${reporte.provincia}</p>
-            <p style="margin:6px 0;"><strong>Fecha y Hora:</strong> ${new Date(reporte.fecha_hora).toLocaleString()}</p>
-            <p style="margin:6px 0;"><strong>Descripción:</strong> ${reporte.descripcion}</p>
+            <p style="margin:6px 0;"><strong>Tipo de Crimen:</strong> ${
+              reporte.tipo_crimen
+            }</p>
+            <p style="margin:6px 0;"><strong>Ubicación:</strong> ${
+              reporte.localidad
+            }, ${reporte.provincia}</p>
+            <p style="margin:6px 0;"><strong>Fecha y Hora:</strong> ${new Date(
+              reporte.fecha_hora
+            ).toLocaleString()}</p>
+            <p style="margin:6px 0;"><strong>Descripción:</strong> ${
+              reporte.descripcion
+            }</p>
           </div>
 
           <!-- Botón CTA -->
           <div style="text-align:center; margin-top:30px;">
-           <a href="http://localhost:3000/html/seccionreportes.html?id=${reporte.id_reporte}" 
+           <a href="http://localhost:3000/html/seccionreportes.html?id=${
+             reporte.id_reporte
+           }" 
               class="cta"
               style="background: linear-gradient(135deg, #9d4edd, #6a0dad); 
               color:#fff; padding:12px 26px; 
@@ -197,7 +204,6 @@ function crearMailNotificacion(reporte) {
 </body>
 </html>`;
 }
-
 
 // Notificar correo de restablecimiento de contraseña
 
