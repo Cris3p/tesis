@@ -14,7 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
   async function cargarLocalidades() {
       try {
           // Usamos la ruta corregida del paso anterior
-          const response = await fetch('../data/localidades.geojson'); 
+          const response = await fetch(
+            "https://tesis-f5ik.onrender.com/data/localidades.geojson"
+          ); 
           const data = await response.json();
           
           const localidadesUnicas = new Set();
