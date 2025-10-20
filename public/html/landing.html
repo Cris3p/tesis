@@ -1,402 +1,578 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSP -->
+    <meta
+      http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        media-src 'self' data:;
+        connect-src 'self' https://tesis-f5ik.onrender.com;
+        script-src 'self' https://unpkg.com;
+        style-src 'self' https://unpkg.com;
+    "
+    />
     <title>OnTrack</title>
-    <link rel="stylesheet" href="../css/landing.css">
-    <link rel="icon" type="image/x-icon" href="../img/logo_blanco.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="../css/landing.css" />
+    <link rel="icon" type="image/x-icon" href="../img/logo_blanco.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Poppins:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <nav class="barra-navegacion">
-        <div class="contenedor-navegacion">
-            <div class="logo">OnTrack</div>
-            <ul class="menu-navegacion">
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#caracteristicas">Características</a></li>
-                <li><a href="#funcionalidades">Funcionalidades</a></li>
-                <li><a href="#nosotros">Nosotros</a></li>
-                <li><a href="#contacto">Contacto</a></li>
-            </ul>
-            <button class="btn-iniciar-sesion"><a href="login" style="text-decoration: none; color: white;">Iniciar Sesión</a></button>
-        </div>
+      <div class="contenedor-navegacion">
+        <div class="logo">OnTrack</div>
+        <ul class="menu-navegacion">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#caracteristicas">Características</a></li>
+          <li><a href="#funcionalidades">Funcionalidades</a></li>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+        <button class="btn-iniciar-sesion">
+          <a href="login" style="text-decoration: none; color: white"
+            >Iniciar Sesión</a
+          >
+        </button>
+      </div>
     </nav>
 
     <section id="inicio" class="seccion-principal">
-        <div class="contenedor-principal">
-            <div class="contenido-principal">
-                <h1 class="titulo-principal">Transita Seguro<br><span class="texto-gradiente">con OnTrack</span></h1>
-                <p class="subtitulo-principal">La plataforma que te ayuda a prevenir situaciones de riesgo, reportar incidentes y encontrar las rutas más seguras en tiempo real.</p>
-                <div class="botones-principal">
-                    <button class="btn-primario"><a href="login" style="text-decoration: none; color: white;">Comenzar Ahora</a></button>
-                </div>
-            </div>
-            <div class="visual-principal">
-                <div class="mockup-telefono">
-                    <div class="pantalla-telefono">
-                        <div class="contenedor-mapa">
-                            <div class="marcador-mapa marcador-1"></div>
-                            <div class="marcador-mapa marcador-2"></div>
-                            <div class="marcador-mapa marcador-3"></div>
-                        </div>
-                        <div class="btn-emergencia"><img src="../img/emergencia2.png" class="emergencia"/></div>
-                    </div>
-                </div>
-                <div class="elementos-flotantes">
-                    <div class="circulo-flotante circulo-1"></div>
-                    <div class="circulo-flotante circulo-2"></div>
-                    <div class="circulo-flotante circulo-3"></div>
-                </div>
-            </div>
+      <div class="contenedor-principal">
+        <div class="contenido-principal">
+          <h1 class="titulo-principal">
+            Transita Seguro<br /><span class="texto-gradiente"
+              >con OnTrack</span
+            >
+          </h1>
+          <p class="subtitulo-principal">
+            La plataforma que te ayuda a prevenir situaciones de riesgo,
+            reportar incidentes y encontrar las rutas más seguras en tiempo
+            real.
+          </p>
+          <div class="botones-principal">
+            <button class="btn-primario">
+              <a href="login" style="text-decoration: none; color: white"
+                >Comenzar Ahora</a
+              >
+            </button>
+          </div>
         </div>
-        <div class="fondo-principal">
-            <div class="mancha mancha-1"></div>
-            <div class="mancha mancha-2"></div>
+        <div class="visual-principal">
+          <div class="mockup-telefono">
+            <div class="pantalla-telefono">
+              <div class="contenedor-mapa">
+                <div class="marcador-mapa marcador-1"></div>
+                <div class="marcador-mapa marcador-2"></div>
+                <div class="marcador-mapa marcador-3"></div>
+              </div>
+              <div class="btn-emergencia">
+                <img src="../img/emergencia2.png" class="emergencia" />
+              </div>
+            </div>
+          </div>
+          <div class="elementos-flotantes">
+            <div class="circulo-flotante circulo-1"></div>
+            <div class="circulo-flotante circulo-2"></div>
+            <div class="circulo-flotante circulo-3"></div>
+          </div>
         </div>
+      </div>
+      <div class="fondo-principal">
+        <div class="mancha mancha-1"></div>
+        <div class="mancha mancha-2"></div>
+      </div>
     </section>
 
     <section id="caracteristicas" class="caracteristicas">
-        <div class="contenedor">
-            <div class="encabezado-seccion">
-                <span class="etiqueta-seccion">¿Qué Ofrecemos?</span>
-                <h2 class="titulo-seccion">Características que marcan<br>la <span class="texto-gradiente">diferencia</span></h2>
-            </div>
-            <div class="rejilla-caracteristicas">
-                <div class="tarjeta-caracteristica">
-                    <div class="icono-caracteristica">
-                        <img src="../img/emergencia2.png" alt="Botón de Emergencia">
-                    </div>
-                    <h3>Botón de Emergencia</h3>
-                    <p>Envía tu ubicación actual a tu contacto de confianza! Respuesta inmediata cuando más lo necesitas.</p>
-                </div>
-                <div class="tarjeta-caracteristica">
-                    <div class="icono-caracteristica">
-                        <img src="../img/mapas.png" alt="Mapa Interactivo">
-                    </div>
-                    <h3>Mapa Interactivo</h3>
-                    <p>Visualiza reportes de incidentes en tiempo real proyectados sobre el mapa. Conoce las zonas de riesgo antes de transitarlas.</p>
-                </div>
-                <div class="tarjeta-caracteristica">
-                    <div class="icono-caracteristica">
-                        <img src="../img/reportes.png" alt="Sistema de Reportes">
-                    </div>
-                    <h3>Sistema de Reportes</h3>
-                    <p>Reporta incidentes desde tu ubicación actual, haciendo click en el mapa o buscando una dirección específica.</p>
-                </div>
-                <div class="tarjeta-caracteristica">
-                    <div class="icono-caracteristica">
-                        <img src="../img/rutas.png" alt="Rutas Seguras">
-                    </div>
-                    <h3>Rutas Seguras</h3>
-                    <p>Algoritmos inteligentes que calculan la ruta más segura evitando zonas de riesgo reportadas por la comunidad.</p>
-                </div>
-                <div class="tarjeta-caracteristica">
-                    <div class="icono-caracteristica">
-                        <img src="../img/estadisticas.png" alt="Estadísticas Avanzadas">
-                    </div>
-                    <h3>Estadísticas Avanzadas</h3>
-                    <p>Visualización de reportes recientes y análisis de criminalidad con gráficos, mapas y filtros.</p>
-                </div>
-                <div class="tarjeta-caracteristica">
-                    <div class="icono-caracteristica">
-                        <img src="../img/user2.png" alt="Perfil Personalizable">
-                    </div>
-                    <h3>Perfil Personalizable</h3>
-                    <p>Gestiona tu información y designa contactos de emergencia.</p>
-                </div>
-            </div>
+      <div class="contenedor">
+        <div class="encabezado-seccion">
+          <span class="etiqueta-seccion">¿Qué Ofrecemos?</span>
+          <h2 class="titulo-seccion">
+            Características que marcan<br />la
+            <span class="texto-gradiente">diferencia</span>
+          </h2>
         </div>
+        <div class="rejilla-caracteristicas">
+          <div class="tarjeta-caracteristica">
+            <div class="icono-caracteristica">
+              <img src="../img/emergencia2.png" alt="Botón de Emergencia" />
+            </div>
+            <h3>Botón de Emergencia</h3>
+            <p>
+              Envía tu ubicación actual a tu contacto de confianza! Respuesta
+              inmediata cuando más lo necesitas.
+            </p>
+          </div>
+          <div class="tarjeta-caracteristica">
+            <div class="icono-caracteristica">
+              <img src="../img/mapas.png" alt="Mapa Interactivo" />
+            </div>
+            <h3>Mapa Interactivo</h3>
+            <p>
+              Visualiza reportes de incidentes en tiempo real proyectados sobre
+              el mapa. Conoce las zonas de riesgo antes de transitarlas.
+            </p>
+          </div>
+          <div class="tarjeta-caracteristica">
+            <div class="icono-caracteristica">
+              <img src="../img/reportes.png" alt="Sistema de Reportes" />
+            </div>
+            <h3>Sistema de Reportes</h3>
+            <p>
+              Reporta incidentes desde tu ubicación actual, haciendo click en el
+              mapa o buscando una dirección específica.
+            </p>
+          </div>
+          <div class="tarjeta-caracteristica">
+            <div class="icono-caracteristica">
+              <img src="../img/rutas.png" alt="Rutas Seguras" />
+            </div>
+            <h3>Rutas Seguras</h3>
+            <p>
+              Algoritmos inteligentes que calculan la ruta más segura evitando
+              zonas de riesgo reportadas por la comunidad.
+            </p>
+          </div>
+          <div class="tarjeta-caracteristica">
+            <div class="icono-caracteristica">
+              <img src="../img/estadisticas.png" alt="Estadísticas Avanzadas" />
+            </div>
+            <h3>Estadísticas Avanzadas</h3>
+            <p>
+              Visualización de reportes recientes y análisis de criminalidad con
+              gráficos, mapas y filtros.
+            </p>
+          </div>
+          <div class="tarjeta-caracteristica">
+            <div class="icono-caracteristica">
+              <img src="../img/user2.png" alt="Perfil Personalizable" />
+            </div>
+            <h3>Perfil Personalizable</h3>
+            <p>Gestiona tu información y designa contactos de emergencia.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="funcionalidades" class="funcionalidades">
-        <div class="contenedor">
-            <div class="encabezado-seccion">
-                <span class="etiqueta-seccion">Explora OnTrack</span>
-                <h2 class="titulo-seccion">Todo lo que necesitas para<br>tu <span class="texto-gradiente">seguridad</span></h2>
-            </div>
-            
-            <div class="item-funcionalidad reverso">
-                <div class="contenido-func">
-                    <h3>Inicio</h3>
-                    <p>La pantalla principal te da acceso inmediato a todas las herramientas de seguridad. El botón de emergencia está siempre visible y listo para activarse.</p>
-                    <ul class="lista-func">
-                        <li>Botón de emergencia accesible en un toque</li>
-                        <li>Mapa de pantalla completa con tu ubicación actual</li>
-                        <li>Visualización de reportes en el mapa</li>
-                    </ul>
-                </div>
-                <div class="visual-func">
-                    <div class="icono-func">
-                        <div class="comp-circle circle-bg"></div>
-                        <div class="comp-circle circle-accent"></div>
-                        <svg class="main-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" stroke-width="2"/>
-                            <path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        <div class="floating-dot dot-1"></div>
-                        <div class="floating-dot dot-2"></div>
-                        <div class="floating-dot dot-3"></div>                   
-                     </div>
-                    <div class="elementos-visuales">
-                        <div class="circulo-visual circulo-1"></div>
-                        <div class="circulo-visual circulo-2"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="item-funcionalidad">
-                <div class="visual-func">
-                    <div class="icono-func">
-                <div class="comp-square square-1"></div>
-                        <div class="comp-square square-2"></div>
-                        <svg class="main-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2"/>
-                            <path d="M14 2V8H20" stroke="currentColor" stroke-width="2"/>
-                            <path d="M16 13H8M16 17H8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <div class="decorative-line line-1"></div>
-                        <div class="decorative-line line-2"></div>
-                    </div>
-                    <div class="elementos-visuales">
-                        <div class="circulo-visual circulo-1"></div>
-                        <div class="circulo-visual circulo-2"></div>
-                    </div>
-                </div>
-                <div class="contenido-func">
-                    <h3>Contribuye a la Comunidad Reportando</h3>
-                    <p>Sistema flexible de reportes que se adapta a tu situación. Comparte información crucial para mantener segura a toda la comunidad.</p>
-                    <ul class="lista-func">
-                        <li>Reporte desde tu ubicación actual</li>
-                        <li>Selección manual en el mapa</li>
-                        <li>Búsqueda por dirección o punto de interés</li>
-                        <li>Categorización por tipos de incidentes</li>
-                        <li>Adjunta descripciones detalladas</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="item-funcionalidad reverso">
-                <div class="contenido-func">
-                    <h3>Tu Perfil Personalizado</h3>
-                    <p>Gestiona toda tu información de seguridad en un solo lugar. Configura tus contactos de emergencia y preferencias personales.</p>
-                    <ul class="lista-func">
-                        <li>Edición de datos personales</li>
-                        <li>Gestión de contactos de emergencia</li>
-                        <li>Historial de reportes realizados</li>
-                    </ul>
-                </div>
-                <div class="visual-func">
-                    <div class="icono-func">
-                    <div class="comp-hexagon"></div>
-                        <svg class="main-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        <div class="orbit-ring ring-1"></div>
-                        <div class="orbit-ring ring-2"></div>
-                    </div>
-                    <div class="elementos-visuales">
-                        <div class="circulo-visual circulo-1"></div>
-                        <div class="circulo-visual circulo-2"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="item-funcionalidad">
-                <div class="visual-func">
-                    <div class="icono-func">
-                    <div class="comp-triangle triangle-1"></div>
-                        <div class="comp-triangle triangle-2"></div>
-                        <svg class="main-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 3V21H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M18 17L13 11L9 14L7 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <div class="stat-bar bar-1"></div>
-                        <div class="stat-bar bar-2"></div>
-                        <div class="stat-bar bar-3"></div>
-                    </div>
-                    <div class="elementos-visuales">
-                        <div class="circulo-visual circulo-1"></div>
-                        <div class="circulo-visual circulo-2"></div>
-                    </div>
-                </div>
-                <div class="contenido-func">
-                    <h3>Estadísticas</h3>
-                    <p>Análisis de la criminalidad con visualizaciones intuitivas. Toma decisiones informadas basadas en datos reales.</p>
-                    <ul class="lista-func">
-                        <li>Mapas de incidentes</li>
-                        <li>Gráficos de tendencias</li>
-                        <li>Filtrado por provincia,localidad, fecha y hora</li>
-                        <li>Análisis por tipo de crimen</li>
-                        <li>Comparativas entre períodos</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="item-funcionalidad reverso">
-                <div class="contenido-func">
-                    <h3>Navega con Confianza con las Rutas Seguras</h3>
-                    <p>Algoritmos inteligentes que analizan miles de reportes para ofrecerte el camino más seguro hacia tu destino.</p>
-                    <ul class="lista-func">
-                        <li>Cálculo inteligente de rutas alternativas</li>
-                        <li>Evita zonas con alta densidad de reportes</li>
-                        <li>Alertas en tiempo real</li>
-                        <li>Visualiza las comisarias cercanas</li>
-                    </ul>
-                </div>
-                <div class="visual-func">
-                    <div class="icono-func">
-                    <div class="path-line line-path-1"></div>
-                        <div class="path-line line-path-2"></div>
-                        <svg class="main-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        <div class="route-marker marker-a"></div>
-                        <div class="route-marker marker-b"></div>
-                    </div>
-                    <div class="elementos-visuales">
-                        <div class="circulo-visual circulo-1"></div>
-                        <div class="circulo-visual circulo-2"></div>
-                    </div>
-                </div>
-            </div>
+      <div class="contenedor">
+        <div class="encabezado-seccion">
+          <span class="etiqueta-seccion">Explora OnTrack</span>
+          <h2 class="titulo-seccion">
+            Todo lo que necesitas para<br />tu
+            <span class="texto-gradiente">seguridad</span>
+          </h2>
         </div>
+
+        <div class="item-funcionalidad reverso">
+          <div class="contenido-func">
+            <h3>Inicio</h3>
+            <p>
+              La pantalla principal te da acceso inmediato a todas las
+              herramientas de seguridad. El botón de emergencia está siempre
+              visible y listo para activarse.
+            </p>
+            <ul class="lista-func">
+              <li>Botón de emergencia accesible en un toque</li>
+              <li>Mapa de pantalla completa con tu ubicación actual</li>
+              <li>Visualización de reportes en el mapa</li>
+            </ul>
+          </div>
+          <div class="visual-func">
+            <div class="icono-func">
+              <div class="comp-circle circle-bg"></div>
+              <div class="comp-circle circle-accent"></div>
+              <svg
+                class="main-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+              <div class="floating-dot dot-1"></div>
+              <div class="floating-dot dot-2"></div>
+              <div class="floating-dot dot-3"></div>
+            </div>
+            <div class="elementos-visuales">
+              <div class="circulo-visual circulo-1"></div>
+              <div class="circulo-visual circulo-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-funcionalidad">
+          <div class="visual-func">
+            <div class="icono-func">
+              <div class="comp-square square-1"></div>
+              <div class="comp-square square-2"></div>
+              <svg
+                class="main-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" />
+                <path
+                  d="M16 13H8M16 17H8"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="decorative-line line-1"></div>
+              <div class="decorative-line line-2"></div>
+            </div>
+            <div class="elementos-visuales">
+              <div class="circulo-visual circulo-1"></div>
+              <div class="circulo-visual circulo-2"></div>
+            </div>
+          </div>
+          <div class="contenido-func">
+            <h3>Contribuye a la Comunidad Reportando</h3>
+            <p>
+              Sistema flexible de reportes que se adapta a tu situación.
+              Comparte información crucial para mantener segura a toda la
+              comunidad.
+            </p>
+            <ul class="lista-func">
+              <li>Reporte desde tu ubicación actual</li>
+              <li>Selección manual en el mapa</li>
+              <li>Búsqueda por dirección o punto de interés</li>
+              <li>Categorización por tipos de incidentes</li>
+              <li>Adjunta descripciones detalladas</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="item-funcionalidad reverso">
+          <div class="contenido-func">
+            <h3>Tu Perfil Personalizado</h3>
+            <p>
+              Gestiona toda tu información de seguridad en un solo lugar.
+              Configura tus contactos de emergencia y preferencias personales.
+            </p>
+            <ul class="lista-func">
+              <li>Edición de datos personales</li>
+              <li>Gestión de contactos de emergencia</li>
+              <li>Historial de reportes realizados</li>
+            </ul>
+          </div>
+          <div class="visual-func">
+            <div class="icono-func">
+              <div class="comp-hexagon"></div>
+              <svg
+                class="main-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+              <div class="orbit-ring ring-1"></div>
+              <div class="orbit-ring ring-2"></div>
+            </div>
+            <div class="elementos-visuales">
+              <div class="circulo-visual circulo-1"></div>
+              <div class="circulo-visual circulo-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="item-funcionalidad">
+          <div class="visual-func">
+            <div class="icono-func">
+              <div class="comp-triangle triangle-1"></div>
+              <div class="comp-triangle triangle-2"></div>
+              <svg
+                class="main-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3 3V21H21"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M18 17L13 11L9 14L7 12"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="stat-bar bar-1"></div>
+              <div class="stat-bar bar-2"></div>
+              <div class="stat-bar bar-3"></div>
+            </div>
+            <div class="elementos-visuales">
+              <div class="circulo-visual circulo-1"></div>
+              <div class="circulo-visual circulo-2"></div>
+            </div>
+          </div>
+          <div class="contenido-func">
+            <h3>Estadísticas</h3>
+            <p>
+              Análisis de la criminalidad con visualizaciones intuitivas. Toma
+              decisiones informadas basadas en datos reales.
+            </p>
+            <ul class="lista-func">
+              <li>Mapas de incidentes</li>
+              <li>Gráficos de tendencias</li>
+              <li>Filtrado por provincia,localidad, fecha y hora</li>
+              <li>Análisis por tipo de crimen</li>
+              <li>Comparativas entre períodos</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="item-funcionalidad reverso">
+          <div class="contenido-func">
+            <h3>Navega con Confianza con las Rutas Seguras</h3>
+            <p>
+              Algoritmos inteligentes que analizan miles de reportes para
+              ofrecerte el camino más seguro hacia tu destino.
+            </p>
+            <ul class="lista-func">
+              <li>Cálculo inteligente de rutas alternativas</li>
+              <li>Evita zonas con alta densidad de reportes</li>
+              <li>Alertas en tiempo real</li>
+              <li>Visualiza las comisarias cercanas</li>
+            </ul>
+          </div>
+          <div class="visual-func">
+            <div class="icono-func">
+              <div class="path-line line-path-1"></div>
+              <div class="path-line line-path-2"></div>
+              <svg
+                class="main-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 11L12 14L22 4"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div class="route-marker marker-a"></div>
+              <div class="route-marker marker-b"></div>
+            </div>
+            <div class="elementos-visuales">
+              <div class="circulo-visual circulo-1"></div>
+              <div class="circulo-visual circulo-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="seccion-porque">
-        <div class="contenedor">
-            <div class="encabezado-seccion">
-                <span class="etiqueta-seccion">¿Por Qué OnTrack?</span>
-                <h2 class="titulo-seccion">La seguridad que<br><span class="texto-gradiente">mereces</span></h2>
-            </div>
-            <div class="rejilla-porque">
-                <div class="tarjeta-porque">
-                    <div class="icono-porque">
-                        <img src="../img/rayo.png" alt="Tiempo Real">
-                    </div>
-                    <h4>Tiempo Real</h4>
-                    <p>Información actualizada al instante para decisiones inmediatas</p>
-                </div>
-                <div class="tarjeta-porque">
-                    <div class="icono-porque">
-                        <img src="../img/comunidad.png" alt="Comunidad">
-                    </div>
-                    <h4>Comunidad</h4>
-                    <p>Una red colaborativa donde todos contribuyen a la seguridad colectiva</p>
-                </div>
-                <div class="tarjeta-porque">
-                    <div class="icono-porque">
-                        <img src="../img/candado.png" alt="Privacidad">
-                    </div>
-                    <h4>Privacidad</h4>
-                    <p>Tus datos personales siempre protegidos y encriptados</p>
-                </div>
-                <div class="tarjeta-porque">
-                    <div class="icono-porque">
-                        <img src="../img/precision.png" alt="Precisión">
-                    </div>
-                    <h4>Precisión</h4>
-                    <p>Algoritmos avanzados para análisis y predicciones exactas</p>
-                </div>
-            </div>
+      <div class="contenedor">
+        <div class="encabezado-seccion">
+          <span class="etiqueta-seccion">¿Por Qué OnTrack?</span>
+          <h2 class="titulo-seccion">
+            La seguridad que<br /><span class="texto-gradiente">mereces</span>
+          </h2>
         </div>
+        <div class="rejilla-porque">
+          <div class="tarjeta-porque">
+            <div class="icono-porque">
+              <img src="../img/rayo.png" alt="Tiempo Real" />
+            </div>
+            <h4>Tiempo Real</h4>
+            <p>
+              Información actualizada al instante para decisiones inmediatas
+            </p>
+          </div>
+          <div class="tarjeta-porque">
+            <div class="icono-porque">
+              <img src="../img/comunidad.png" alt="Comunidad" />
+            </div>
+            <h4>Comunidad</h4>
+            <p>
+              Una red colaborativa donde todos contribuyen a la seguridad
+              colectiva
+            </p>
+          </div>
+          <div class="tarjeta-porque">
+            <div class="icono-porque">
+              <img src="../img/candado.png" alt="Privacidad" />
+            </div>
+            <h4>Privacidad</h4>
+            <p>Tus datos personales siempre protegidos y encriptados</p>
+          </div>
+          <div class="tarjeta-porque">
+            <div class="icono-porque">
+              <img src="../img/precision.png" alt="Precisión" />
+            </div>
+            <h4>Precisión</h4>
+            <p>Algoritmos avanzados para análisis y predicciones exactas</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="nosotros" class="sobre-nosotros">
-        <div class="contenedor">
-            <div class="contenedor-sobre">
-                <div class="contenido-sobre">
-                    <span class="etiqueta-seccion">Sobre Nosotros</span>
-                    <h2>Un proyecto <br>con <span class="texto-gradiente">gran impacto</span></h2>
-                    <p>OnTrack nace como un proyecto desarrollado por estudiantes de la técnica N°3 comprometidos con la seguridad de nuestra comunidad. Queríamos aplicar lo que aprendimos en algo útil para la comunidad, y así nació esta herramienta pensada para mejorar la seguridad en nuestro entorno.</p>
-                    <p>Creemos que la tecnología puede ser una herramienta poderosa para prevenir situaciones de riesgo y empoderar a las personas con información en tiempo real. Nuestro objetivo es construir una comunidad más segura donde cada usuario pueda transitar con confianza.</p>
-                </div>
-                <div class="visual-sobre">
-                    <div class="grafico-equipo">
-                        <div class="elemento-grafico elemento-1"></div>
-                        <div class="elemento-grafico elemento-2"></div>
-                        <div class="elemento-grafico elemento-3"></div>
-                    </div>
-                </div>
+      <div class="contenedor">
+        <div class="contenedor-sobre">
+          <div class="contenido-sobre">
+            <span class="etiqueta-seccion">Sobre Nosotros</span>
+            <h2>
+              Un proyecto <br />con
+              <span class="texto-gradiente">gran impacto</span>
+            </h2>
+            <p>
+              OnTrack nace como un proyecto desarrollado por estudiantes de la
+              técnica N°3 comprometidos con la seguridad de nuestra comunidad.
+              Queríamos aplicar lo que aprendimos en algo útil para la
+              comunidad, y así nació esta herramienta pensada para mejorar la
+              seguridad en nuestro entorno.
+            </p>
+            <p>
+              Creemos que la tecnología puede ser una herramienta poderosa para
+              prevenir situaciones de riesgo y empoderar a las personas con
+              información en tiempo real. Nuestro objetivo es construir una
+              comunidad más segura donde cada usuario pueda transitar con
+              confianza.
+            </p>
+          </div>
+          <div class="visual-sobre">
+            <div class="grafico-equipo">
+              <div class="elemento-grafico elemento-1"></div>
+              <div class="elemento-grafico elemento-2"></div>
+              <div class="elemento-grafico elemento-3"></div>
             </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <section class="seccion-llamada-accion">
-        <div class="contenedor">
-            <div class="contenedor-llamada">
-                <div class="contenido-llamada">
-                    <h2>¿Listo para sentirte más seguro?</h2>
-                    <p>Únete a OnTrack y comienza a transitar con confianza</p>
-                    <button class="btn-llamada"><a href="login" style="text-decoration: none; color: var(--violeta-principal);">Comienza Ahora</a></button>
-                </div>
-                <div class="formas-llamada">
-                    <div class="forma forma-1"></div>
-                    <div class="forma forma-2"></div>
-                    <div class="forma forma-3"></div>
-                </div>
-            </div>
+      <div class="contenedor">
+        <div class="contenedor-llamada">
+          <div class="contenido-llamada">
+            <h2>¿Listo para sentirte más seguro?</h2>
+            <p>Únete a OnTrack y comienza a transitar con confianza</p>
+            <button class="btn-llamada">
+              <a
+                href="login"
+                style="text-decoration: none; color: var(--violeta-principal)"
+                >Comienza Ahora</a
+              >
+            </button>
+          </div>
+          <div class="formas-llamada">
+            <div class="forma forma-1"></div>
+            <div class="forma forma-2"></div>
+            <div class="forma forma-3"></div>
+          </div>
         </div>
+      </div>
     </section>
 
     <section id="contacto" class="contacto">
-        <div class="contenedor">
-            <div class="rejilla-contacto">
-                <div class="info-contacto">
-                    <h2>¿Tienes preguntas?</h2>
-                    <p>Estamos aquí para ayudarte. Contáctanos y resolveremos todas tus dudas sobre OnTrack.</p>
-                    <div class="items-contacto">
-                        <div class="item-contacto">
-                            <div class="icono-contacto">
-                                <img src="../img/email.png" alt="Email">
-                            </div>
-                            <div>
-                                <div class="titulo-contacto">Email</div>
-                                <div class="valor-contacto">ontrack0010@gmail.com</div>
-                            </div>
-                        </div>
-                    </div>
+      <div class="contenedor">
+        <div class="rejilla-contacto">
+          <div class="info-contacto">
+            <h2>¿Tienes preguntas?</h2>
+            <p>
+              Estamos aquí para ayudarte. Contáctanos y resolveremos todas tus
+              dudas sobre OnTrack.
+            </p>
+            <div class="items-contacto">
+              <div class="item-contacto">
+                <div class="icono-contacto">
+                  <img src="../img/email.png" alt="Email" />
                 </div>
-                <form class="formulario-contacto">
-                    <input type="text" placeholder="Nombre" class="input-formulario">
-                    <input type="email" placeholder="Email" class="input-formulario">
-                    <input type="text" placeholder="Asunto" class="input-formulario">
-                    <textarea placeholder="Mensaje" class="textarea-formulario"></textarea>
-                    <button type="submit" class="btn-enviar">Enviar Mensaje</button>
-                </form>
+                <div>
+                  <div class="titulo-contacto">Email</div>
+                  <div class="valor-contacto">ontrack0010@gmail.com</div>
+                </div>
+              </div>
             </div>
+          </div>
+          <form class="formulario-contacto">
+            <input type="text" placeholder="Nombre" class="input-formulario" />
+            <input type="email" placeholder="Email" class="input-formulario" />
+            <input type="text" placeholder="Asunto" class="input-formulario" />
+            <textarea
+              placeholder="Mensaje"
+              class="textarea-formulario"
+            ></textarea>
+            <button type="submit" class="btn-enviar">Enviar Mensaje</button>
+          </form>
         </div>
+      </div>
     </section>
 
     <footer class="pie-pagina">
-        <div class="contenedor">
-            <div class="contenido-pie">
-                <div class="marca-pie">
-                    <div class="logo-pie">OnTrack</div>
-                    <p>¿Listo para sentirte más seguro?</p>
-                </div>
-                <div class="enlaces-pie">
-                    <div class="columna-pie">
-                        <h4>Producto</h4>
-                        <a href="#caracteristicas">Características</a>
-                        <a href="#funcionalidades">Funcionalidades</a>
-                    </div>
-                    <div class="columna-pie">
-                        <h4>Compañía</h4>
-                        <a href="#nosotros">Sobre Nosotros</a>
-                        <a href="#contacto">Contacto</a>
-                    </div>
-                    
-                </div>
+      <div class="contenedor">
+        <div class="contenido-pie">
+          <div class="marca-pie">
+            <div class="logo-pie">OnTrack</div>
+            <p>¿Listo para sentirte más seguro?</p>
+          </div>
+          <div class="enlaces-pie">
+            <div class="columna-pie">
+              <h4>Producto</h4>
+              <a href="#caracteristicas">Características</a>
+              <a href="#funcionalidades">Funcionalidades</a>
             </div>
-            <div class="fondo-pie">
-                <p>&copy; 2025 OnTrack. Todos los derechos reservados a Tais Leyes, Rosio Scabini, Valentina Miranda y Cristian Piñeyro.</p>
+            <div class="columna-pie">
+              <h4>Compañía</h4>
+              <a href="#nosotros">Sobre Nosotros</a>
+              <a href="#contacto">Contacto</a>
             </div>
+          </div>
         </div>
+        <div class="fondo-pie">
+          <p>
+            &copy; 2025 OnTrack. Todos los derechos reservados a Tais Leyes,
+            Rosio Scabini, Valentina Miranda y Cristian Piñeyro.
+          </p>
+        </div>
+      </div>
     </footer>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../js/landing.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/landing.js"></script>
+  </body>
 </html>
