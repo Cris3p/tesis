@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allowOutsideClick: false,
         didOpen: async () => {
           Swal.showLoading();
-          const res = await fetch('/usuarios/registro', {
+          const res = await fetch('https://tesis-f5ik.onrender.com/usuarios/registro', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
