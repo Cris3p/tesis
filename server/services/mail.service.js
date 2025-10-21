@@ -16,7 +16,7 @@ dotenv.config();
 // Configuración del transporte SMTP usando nodemailer
 const transporte = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
-  port: 456, // CAMBIO: Usar puerto seguro
+  port: 465, // CAMBIO: Usar puerto seguro
   secure: true, // CAMBIO: Activar modo seguro (SSL/TLS)
   auth: {
     user: process.env.MAIL_USER,
