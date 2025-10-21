@@ -212,7 +212,8 @@ export async function enviarResetPassword(direccion, token) {
 }
 
 function crearMailResetPassword(token) {
-  const resetLink = `${process.env.BASE_URL}/html/NuevaContraseña.html?token=${token}`;
+  const BASES_URL = "https://tesis-f5ik.onrender.com";
+  const resetLink = `${BASES_URL}/html/NuevaContraseña.html?token=${token}`;
   return `
 <!DOCTYPE html>
 <html lang="es">
