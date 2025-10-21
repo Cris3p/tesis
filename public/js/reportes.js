@@ -365,7 +365,7 @@ document.getElementById("reporteForm").addEventListener("submit", async function
     };
 
     try {
-        const res = await fetch("/reportes/generar", {
+        const res = await fetch("tesis-f5ik.onrender.com/reportes/generar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(datos)
