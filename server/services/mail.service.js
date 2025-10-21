@@ -24,7 +24,9 @@ const transporte = nodemailer.createTransport({
   },
   tls: {
     rejectUnauthorized: false 
-  }
+  },
+  debug: true, // Habilita debug para ver logs detallados
+  logger: true // Muestra logs en consola
 });
 
 // No es neceasario mostrarlo por si acaso
