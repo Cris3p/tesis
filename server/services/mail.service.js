@@ -42,7 +42,7 @@ transporte.verify(function (error, success) {
 //Función para enviar el correo de verificación
 export async function enviarverificacion(direccion, token) {
   transporte.sendMail({
-    from: "ONTRACK <no-reply@ontrack0010.com>",
+    from: "ONTRACK <ontrack0010@gmail.com>",
     to: direccion,
     subject: "Verificación de cuenta ONTRACK",
     html: crearMailVerificacion(token),
