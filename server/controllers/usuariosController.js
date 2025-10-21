@@ -61,21 +61,18 @@ exports.verificarUsuario = async (req, res) => {
         const { usuario, email, password, fecha, genero, localidad } = decoded; 
 
         // Chequear si el usuario ya fue verificado para evitar duplicados/errores
-        if (result.insertId) {
-    await usuarios.verificarUsuario(result.insertId);
-    console.log('Usuario verificado con ID:', result.insertId);
-    return res.redirect('/html/login.html?verificado=true');
-}
+       
 
         const salt = await bcrypt.genSalt(10);
         const hashPassword = await bcrypt.hash(password, salt);
 
         // CORRECCIÓN: Se pasa 'localidad' al modelo para guardarlo
         const result = await usuarios.setUsuarios(usuario, email, hashPassword, fecha, genero, localidad); 
-
-        if (result.insertId) {
-            // Si la inserción fue exitosa, no hace falta verificar (ya se guardó como verificado)
-            return res.redirect('https://tesis-f5ik.onrender.com/html/login.html?verificado=true');
+ if (result.insertId) {
+    await usuarios.verificarUsuario(result.insertId);
+    console.log('Usuario verificado con ID:', result.insertId);
+    return res.redirect('/html/login.html?verificado=true');
+     
         } else {
             return res.status(500).send('Error al verificar y guardar el usuario.');
         }
