@@ -16,6 +16,8 @@ app.use(cookieParser()); // Habilita el manejo de cookies
 app.use(express.static(path.join(__dirname, '../public'))); // Sirve archivos estáticos (HTML, CSS, JS)
 
 
+
+
 // Importación de rutas
 const usuariosRoutes = require('./routes/usuariosRoutes')
 const contactosRoutes = require('./routes/contactosRoutes');
