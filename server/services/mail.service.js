@@ -1,49 +1,75 @@
-import nodemailer from 'nodemailer';
+const sgMail = require('@sendgrid/mail');
 import dotenv from 'dotenv';
 dotenv.config();
 
-//por el momento esto es en produccion
-// const transporte = nodemailer.createTransport({
-//   host: "smtp.sendgrid.net" || process.env.MAIL_HOST,
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     user: process.env.SENDGRID_USER,
-//     pass: process.env.SENDGRID_PASS
-//   }
-// });
+sgMail.setApiKey(process.env.MAIL_PASS);
 
-// Configuración del transporte SMTP usando nodemailer
-const transporte = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: 465, // CAMBIO: Usar puerto seguro
-  secure: true, // CAMBIO: Activar modo seguro (SSL/TLS)
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-  debug: true, // Habilita debug para ver logs detallados
-  logger: true // Muestra logs en consola
-});
-
-// No es neceasario mostrarlo por si acaso
-// Verifica la conexión con el servidor SMTP
-transporte.verify(function (error, success) {
-  if (error) {
-    console.log("Error al conectar con el servidor de correo:", error);
-  } else {
-    console.log("Servidor de correo listo para enviar mensajes");
-  }
-});
-
-//Función para enviar el correo de verificación
 export async function enviarverificacion(direccion, token) {
-  transporte.sendMail({
-    from: "ONTRACK <ontrack0010@gmail.com>",
-    to: direccion,
-    subject: "Verificación de cuenta ONTRACK",
-    html: crearMailVerificacion(token),
-  });
+  try {
+    const msg = {
+      to: direccion,
+      from: 'ONTRACK <ontrack0010@gmail.com>', // Email verificado en SendGrid
+      subject: 'Verificación de cuenta ONTRACK',
+      html: crearMailVerificacion(token),
+    };
+    const info = await sgMail.send(msg);
+    console.log(`Correo de verificación enviado a ${direccion}, ID: ${info[0].messageId}`);
+  } catch (error) {
+    console.error(`Error enviando verificación a ${direccion}:`, error.response?.body || error);
+    throw error;
+  }
+}
+
+// Función para enviar el correo de notificación de nuevo reporte
+export async function enviarNotificacionReporte(destinatarios, reporte) {
+  try {
+    const msg = {
+      to: destinatarios, // SendGrid acepta un array directamente
+      from: 'ONTRACK <ontrack0010@gmail.com>',
+      subject: '¡Nuevo Reporte de Crimen en tu área!',
+      html: crearMailNotificacion(reporte),
+    };
+    const info = await sgMail.send(msg);
+    console.log(`Notificación enviada a ${destinatarios.join(', ')}, ID: ${info[0].messageId}`);
+  } catch (error) {
+    console.error('Error al enviar la notificación de reporte:', error.response?.body || error);
+    throw error;
+  }
+}
+
+// Función para enviar el correo de restablecimiento de contraseña
+export async function enviarResetPassword(direccion, token) {
+  try {
+    const msg = {
+      to: direccion,
+      from: 'ONTRACK <ontrack0010@gmail.com>',
+      subject: 'Restablecer contraseña - ONTRACK',
+      html: crearMailResetPassword(token),
+    };
+    const info = await sgMail.send(msg);
+    console.log(`Correo de recuperación enviado a ${direccion}, ID: ${info[0].messageId}`);
+  } catch (error) {
+    console.error('Error al enviar correo de recuperación:', error.response?.body || error);
+    throw error;
+  }
+}
+
+// Función para enviar el correo de contacto
+export async function enviarContacto(nombre, email, asunto, mensaje) {
+  try {
+    const msg = {
+      to: 'ontrack0010@gmail.com',
+      from: 'ONTRACK <ontrack0010@gmail.com>',
+      replyTo: email,
+      subject: `Nuevo mensaje de contacto: ${asunto}`,
+      html: crearMailContacto(nombre, email, asunto, mensaje),
+    };
+    const info = await sgMail.send(msg);
+    console.log(`Mensaje de contacto recibido de ${email}, ID: ${info[0].messageId}`);
+  } catch (error) {
+    console.error('Error al enviar correo de contacto:', error.response?.body || error);
+    throw error;
+  }
 }
 
 // Función para crear el contenido HTML del correo de verificación
@@ -94,24 +120,6 @@ function crearMailVerificacion(token) {
 </body>
 </html>
     `;
-}
-
-// Función para enviar el correo de notificación de nuevo reporte
-export async function enviarNotificacionReporte(destinatarios, reporte) {
-  try {
-    const mailOptions = {
-      from: "ONTRACK <no-reply@ontrack0010.com>",
-      to: destinatarios.join(','), // Separa los correos con comas
-      subject: `¡Nuevo Reporte de Crimen en tu área!`,
-      html: crearMailNotificacion(reporte),
-    };
-
-    await transporte.sendMail(mailOptions);
-    console.log("Notificación de reporte enviada exitosamente a todos los usuarios.");
-  } catch (error) {
-    console.error("Error al enviar la notificación de reporte:", error);
-    throw error;
-  }
 }
 
 // Función para generar el HTML del correo de notificación
@@ -199,21 +207,6 @@ function crearMailNotificacion(reporte) {
 
 
 // Notificar correo de restablecimiento de contraseña
-
-export async function enviarResetPassword(direccion, token) {
-  try {
-    await transporte.sendMail({
-      from: "ONTRACK <no-reply@ontrack0010.com>",
-      to: direccion,
-      subject: "Restablecer contraseña - ONTRACK",
-      html: crearMailResetPassword(token),
-    });
-    console.log(`Correo de recuperación enviado a ${direccion}`);
-  } catch (error) {
-    console.error("Error al enviar correo de recuperación:", error);
-    throw error;
-  }
-}
 
 function crearMailResetPassword(token) {
   const BASES_URL = "https://tesis-f5ik.onrender.com";
@@ -348,23 +341,6 @@ function crearMailResetPassword(token) {
 </body>
 </html>
   `;
-}
-
-export async function enviarContacto(nombre, email, asunto, mensaje) {
-  try {
-    await transporte.sendMail({
-      from: "ONTRACK <no-reply@ontrack0010.com>",
-      to: "ontrack0010@gmail.com", // Correo que recibe los mensajes del formulario
-      replyTo: email, // Permite responder directamente al usuario
-      subject: `Nuevo mensaje de contacto: ${asunto}`,
-      html: crearMailContacto(nombre, email, asunto, mensaje),
-    });
-
-    console.log(`Mensaje de contacto recibido de ${email}`);
-  } catch (error) {
-    console.error("Error al enviar correo de contacto:", error);
-    throw error;
-  }
 }
 
 function crearMailContacto(nombre, email, asunto, mensaje) {
