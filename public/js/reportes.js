@@ -339,7 +339,18 @@ document.getElementById("reporteForm").addEventListener("submit", async function
         document.getElementById("provincia").value = provincia;
         document.getElementById("localidad").value = localidad;
     }
+    const descripcion = document.getElementById("descripcion").value.trim();
 
+    if (descripcion && window.filtroLenguaje.contieneLenguajeOfensivo(descripcion)) {
+    Swal.fire({
+        ...swalConfig,
+        icon: 'warning',
+        title: 'Contenido inapropiado',
+        text: 'La descripción contiene lenguaje ofensivo. Por favor, usá un lenguaje respetuoso.',
+        confirmButtonText: 'Entendido'
+    });
+    return;
+}
     const datos = {
         id_usuario,
         tipo_crimen: document.getElementById("tipo").value,

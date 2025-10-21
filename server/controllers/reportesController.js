@@ -2,6 +2,7 @@ const { rawListeners } = require("../config/db");
 const mailService = require("../services/mail.service"); 
 const reportesModel = require("../models/reportesModel");
 const usuariosModel = require("../models/usuariosModel"); 
+const filtroLenguajeService = require("../services/filtroLenguajesService.js");
 const Peach = require("../../lib/peach/Peach.js");
 
 exports.show = (req, res) => {
@@ -16,14 +17,16 @@ exports.show = (req, res) => {
 exports.generarReporte = async (req, res) => {
     try {
         const { id_usuario, tipo_crimen, lat, lon, fecha_hora, localidad, provincia, descripcion, iluminacion, gente } = req.body;
-
-        // Usamos la localidad del reporte (ej: "Lanús Este") para la búsqueda flexible.
-        const localidadReporte = localidad.trim(); 
         
+        if (descripcion && filtroLenguajeService.contieneLenguajeOfensivo(descripcion)) {
+            return res.status(400).json({ 
+                error: "La descripción contiene lenguaje ofensivo. Por favor, se respetuoso." 
+            });
+        }
         let id_reporte;
         try {
             id_reporte = await reportesModel.generarReporte(
-                Number(id_usuario), tipo_crimen, Number(lat), Number(lon), fecha_hora, localidadReporte, provincia, descripcion, iluminacion, gente
+                Number(id_usuario), tipo_crimen, Number(lat), Number(lon), fecha_hora, localidad, provincia, descripcion || null, iluminacion, gente
             );
             console.log("Reporte guardado en la base de datos con ID:", id_reporte);
         } catch (dbError) {
@@ -32,24 +35,18 @@ exports.generarReporte = async (req, res) => {
         }
 
         try {
-            // Se llama a la función de búsqueda flexible del modelo
-            const userEmailsByLocalidad = await usuariosModel.getAllUserEmailsByLocalidad(localidadReporte);
-            
-            if (userEmailsByLocalidad.length > 0) {
-                const reporteData = { 
-                    id_reporte,
-                    tipo_crimen, 
-                    localidad: localidadReporte, 
-                    provincia, 
-                    fecha_hora, 
-                    descripcion 
-                };
-                // Se utiliza la lista de emails filtrada
-                await mailService.enviarNotificacionReporte(userEmailsByLocalidad, reporteData);
-                console.log(`Notificaciones enviadas por correo a ${userEmailsByLocalidad.length} usuarios.`);
-            } else {
-                console.log(`ADVERTENCIA: No se encontraron usuarios registrados en el Partido/Comuna de la localidad: ${localidadReporte}. No se enviaron notificaciones.`);
-            }
+            const allUserEmails = await usuariosModel.getAllUserEmails();
+            const reporteData = { 
+                id_reporte,
+                tipo_crimen, 
+                localidad, 
+                provincia, 
+                fecha_hora, 
+                descripcion: descripcion || 'Sin descripción adicional'
+
+            };
+            await mailService.enviarNotificacionReporte(allUserEmails, reporteData);
+            console.log("Notificaciones enviadas por correo.");
         } catch (mailError) {
             console.error("ADVERTENCIA: Falló el envío de correo de notificación:", mailError);
             return res.status(201).json({ 
