@@ -100,14 +100,14 @@ exports.loginUsuario = async (req, res) => {
         console.log('Usuario encontrado:', user ? user.email : 'No encontrado');
 
         if (!user) {
-            return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+            return res.status(401).json({ error: 'Usuario incorrectos' });
         }
 
         const cont = await bcrypt.compare(password, user.password);
         console.log('Contraseña válida:', cont);
 
         if (!cont) {
-            return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+            return res.status(401).json({ error: ' contraseña incorrectos' });
         }
         
         if (user.verificado !== 1) {
