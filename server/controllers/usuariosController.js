@@ -93,25 +93,27 @@ exports.verificarUsuario = async (req, res) => {
 exports.loginUsuario = async (req, res) => {
     try {
         const { usuario, password } = req.body;
+        console.log('Intento de login con usuario:', usuario);
 
         const userRows = await usuarios.getUsuarioByEmailOrUsuario(usuario);
         const user = userRows[0];
+        console.log('Usuario encontrado:', user ? user.email : 'No encontrado');
 
         if (!user) {
             return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
         }
 
         const cont = await bcrypt.compare(password, user.password);
+        console.log('Contraseña válida:', cont);
 
         if (!cont) {
             return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
         }
         
-        // Verifica si el usuario fue verificado por email
         if (user.verificado !== 1) {
+            console.log('Cuenta no verificada para:', user.email);
             return res.status(401).json({ error: 'Tu cuenta aún no ha sido verificada. Revisa tu email.' });
         }
-
         const token = jwt.sign({ id: user.ID_usuarios }, process.env.JWT_SECRET, {
             expiresIn: process.env.COOKIE_EXPIRES + 'd' // La cookie expira en X días (definido en .env)
         });
