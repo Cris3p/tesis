@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Enviando solicitud a:', 'https://tesis-f5ik.onrender.com/usuarios/login');
       console.log('Datos enviados:', JSON.stringify(data));
       
-      const res = await fetch('https://tesis-f5ik.onrender.com/usuarios/solicitud', {
+      const res = await fetch('https://tesis-f5ik.onrender.com/usuarios/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

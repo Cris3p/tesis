@@ -53,7 +53,11 @@ function crearMailVerificacion(token) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
- 
+ <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  media-src 'self' data:;
+  connect-src 'self' https://tesis-f5ik.onrender.com;
+">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -72,7 +76,7 @@ function crearMailVerificacion(token) {
       <p>Gracias por registrarte en <strong>ONTRACK</strong>. Para activar tu cuenta y comenzar a usar nuestros servicios, haz clic en el botón a continuación:</p>
       
       <p style="text-align:center; margin:30px 0;">
-        <a href="http://localhost:3000/usuarios/verificar/${token}" 
+        <a href="https://tesis-f5ik.onrender.com/usuarios/verificar/${token}" 
            style="background:#9d4edd; color:#fff; text-decoration:none; padding:14px 28px; border-radius:8px; font-size:16px; font-weight:bold; display:inline-block;">
           Verificar cuenta
         </a>
@@ -117,6 +121,7 @@ function crearMailNotificacion(reporte) {
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://tesis-f5ik.onrender.com">
   <title>Nuevo Reporte de Crimen</title>
   <style>
     
@@ -164,7 +169,7 @@ function crearMailNotificacion(reporte) {
 
           <!-- Botón CTA -->
           <div style="text-align:center; margin-top:30px;">
-           <a href="http://localhost:3000/html/seccionreportes.html?id=${reporte.id_reporte}" 
+           <a href="https://tesis-f5ik.onrender.com/html/seccionreportes.html?id=${reporte.id_reporte}" 
               class="cta"
               style="background: linear-gradient(135deg, #9d4edd, #6a0dad); 
               color:#fff; padding:12px 26px; 
