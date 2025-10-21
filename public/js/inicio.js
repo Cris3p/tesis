@@ -221,7 +221,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       }
     });
 
-    const res = await fetch(`/contactos/${idUsuario}`);
+    const res = await fetch(`https://tesis-f5ik.onrender.com/contactos/${idUsuario}`);
     if (!res.ok) throw new Error("No se pudieron obtener los contactos");
     const contactos = await res.json();
 

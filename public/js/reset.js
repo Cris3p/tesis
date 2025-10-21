@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      const res = await fetch("/usuarios/Cambiarpssw", {
+      const res = await fetch("https://tesis-f5ik.onrender.com/usuarios/Cambiarpssw", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, nuevaPassword: newPass }),
