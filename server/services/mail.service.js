@@ -17,10 +17,10 @@ dotenv.config();
 const transporte = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: 465, // CAMBIO: Usar puerto seguro
-  secure: false, // CAMBIO: Activar modo seguro (SSL/TLS)
+  secure: true, // CAMBIO: Activar modo seguro (SSL/TLS)
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.SENDGRID_API_KEY,
+    pass: process.env.MAIL_PASS,
   },
   tls: {
     ciphers: "SSLv3", // Opcional, para compatibilidad con algunos servidores
@@ -356,9 +356,9 @@ export async function enviarContacto(nombre, email, asunto, mensaje) {
       html: crearMailContacto(nombre, email, asunto, mensaje),
     });
 
-    console.log(`✅ Mensaje de contacto recibido de ${email}`);
+    console.log(`Mensaje de contacto recibido de ${email}`);
   } catch (error) {
-    console.error("❌ Error al enviar correo de contacto:", error);
+    console.error("Error al enviar correo de contacto:", error);
     throw error;
   }
 }
