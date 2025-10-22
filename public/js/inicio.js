@@ -1,6 +1,6 @@
 //-------------------MAPA---LEAFLET.JS----------------------------//
 
-// Configuración global de SweetAlert2
+// === Configuración SweetAlert2 ===
 const swalConfig = {
   confirmButtonColor: '#5b3ea1',
   background: '#1f1c29',
@@ -171,11 +171,6 @@ const cargarReportes = async (endpoint, map) => {
 };
 cargarReportes('/reportes/getall', map);
 
-// === EVENTOS DE UBICACIÓN ===
-map.on('locationfound', onLocationFound);
-map.on('locationerror', onLocationError);
-map.locate({ setView: true, maxZoom: 16 });
-
 // === BOTÓN DE EMERGENCIA ===
 document.getElementById("btn-emergencia").addEventListener("click", async () => {
   const idUsuario = Number(localStorage.getItem("usuarioId"));
@@ -218,7 +213,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
   }
 });
 
-// === COMISARÍAS Y HOSPITALES ===
+// === CAPAS DE COMISARÍAS Y HOSPITALES ===
 async function cargarComisarias() {
   try {
     const res = await fetch('/data/comisarias.geojson');
@@ -265,7 +260,56 @@ document.querySelector('[data-filter="hospitales"]').addEventListener('click', f
   this.classList.contains('active') ? cargarHospitales() : map.removeLayer(hospitalesLayer);
 });
 
-// === MENÚ USUARIO ===
+// === BUSCADOR Y RUTAS ===
+const inputBuscar = document.getElementById("inputBuscar");
+const sugerenciasBox = document.getElementById("sugerencias");
+
+inputBuscar.addEventListener("input", async function () {
+  const query = this.value.trim();
+  sugerenciasBox.innerHTML = "";
+  if (!query) return;
+
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ", Argentina")}&limit=5`;
+    const res = await fetch(url);
+    const lugares = await res.json();
+
+    lugares.forEach(lugar => {
+      const item = document.createElement("div");
+      item.className = "sugerencia-item";
+      item.textContent = lugar.display_name;
+      item.addEventListener("click", () => seleccionarDestino(lugar));
+      sugerenciasBox.appendChild(item);
+    });
+  } catch (err) {
+    console.error("Error en buscador:", err);
+  }
+});
+
+function seleccionarDestino(lugar) {
+  sugerenciasBox.innerHTML = "";
+  inputBuscar.value = lugar.display_name;
+
+  if (destinoMarker) map.removeLayer(destinoMarker);
+  const coords = [lugar.lat, lugar.lon];
+  destinoMarker = L.marker(coords, { icon: crearDestinoIcon() }).addTo(map);
+
+  if (routingControl) map.removeControl(routingControl);
+
+  routingControl = L.Routing.control({
+    waypoints: [
+      L.latLng(ubicacionActual.lat, ubicacionActual.lon),
+      L.latLng(coords[0], coords[1])
+    ],
+    lineOptions: {
+      styles: [{ color: '#3e2c6d', weight: 5 }]
+    },
+    createMarker: () => null,
+    addWaypoints: false
+  }).addTo(map);
+}
+
+// === MENÚ DE USUARIO ===
 document.getElementById("userBtn").addEventListener("click", () => {
   document.getElementById("menuDropdown").classList.toggle("hidden");
 });
