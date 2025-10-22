@@ -1,46 +1,24 @@
 //-------------------MAPA---LEAFLET.JS----------------------------//
 
-var map = L.map('map').setView([0.0, 0.0], 2.5); // Vista inicial del mapa centrada en coordenadas 0,0 con un zoom de 2.5
-// Declarar la variable global para que todos la vean
-let ubicacionActual = null;
+// Configuración global de SweetAlert2
+const swalConfig = {
+  confirmButtonColor: '#5b3ea1',
+  background: '#1f1c29',
+  color: '#e4e6eb',
+  iconColor: '#5b3ea1',
+  heightAuto: false
+};
+
+var map = L.map('map').setView([0.0, 0.0], 2.5);
+
 L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
   maxZoom: 20,
   attribution: '&copy; Stadia Maps'
 }).addTo(map);
 
 var marker;
-let routingControl = null;
-
-// === FUNCIÓN PARA OBTENER UBICACIÓN CON PROMISE ===
-function obtenerUbicacionActual() {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error("Geolocalización no soportada"));
-      return;
-    }
-    
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const ubicacion = { 
-          lat: pos.coords.latitude, 
-          lon: pos.coords.longitude 
-        };
-        resolve(ubicacion);
-      },
-      (err) => {
-        console.error("Error obteniendo ubicación:", err);
-        // Fallback: usar centro del mapa
-        const center = map.getCenter();
-        resolve({ lat: center.lat, lon: center.lng });
-      },
-      { 
-        enableHighAccuracy: true, 
-        timeout: 10000, 
-        maximumAge: 30000 
-      }
-    );
-  });
-}
+var comisariasLayer = null;
+var hospitalesLayer = null;
 
 function crearLocationIcon() {
   return L.divIcon({
@@ -60,17 +38,23 @@ function crearMarker2Icon() {
   });
 }
 
-var destinoMarker;
-
-function crearDestinoIcon() {
+function crearComisariaIcon() {
   return L.divIcon({
-    className: 'destino-marker',
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-    html: '<div class="destino-dot"></div>'
+    className: 'comisaria-marker',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    html: '<img src="../img/policia.png" style="width: 100%; height: 100%; object-fit: contain;" />'
   });
 }
 
+function crearHospitalIcon() {
+  return L.divIcon({
+    className: 'hospital-marker',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    html: '<img src="../img/hospital.png" style="width: 100%; height: 100%; object-fit: contain;" />'
+  });
+}
 
 function onLocationFound(e) {
   if (marker) {
@@ -96,13 +80,23 @@ function onLocationFound(e) {
 }
 
 function onLocationError(e) {
-  alert("No se pudo obtener tu ubicación: " + e.message);
+  Swal.fire({
+    ...swalConfig,
+    icon: 'error',
+    title: 'Error de ubicación',
+    text: 'No se pudo obtener tu ubicación: ' + e.message
+  });
   console.error('Error de geolocalización:', e);
 }
 
 function iniciarSeguimientoUbicacion() {
   if (!navigator.geolocation) {
-    alert("Geolocalización no soportada en este dispositivo");
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Geolocalización no disponible',
+      text: 'Tu dispositivo no soporta la geolocalización'
+    });
     return;
   }
 
@@ -116,12 +110,13 @@ function iniciarSeguimientoUbicacion() {
       console.log('Ubicación actualizada:', pos.coords);
     },
     (err) => {
-      console.warn("Timeout geolocalización, usando centro del mapa:", err);
-      const center = map.getCenter();
-      ubicacionActual = { lat: center.lat, lon: center.lng };
+      onLocationError(err);
     },
-    { enableHighAccuracy: true, timeout: 30000, maximumAge: 60000 }
-
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
   );
 }
 
@@ -165,7 +160,7 @@ const cargarReportes = async (endpoint, map) => {
       throw new Error(`Error en la solicitud: ${response.status}`);
     }
     const data = await response.json();
-    console.log('Reportes obtenidos:', data); // Depuración
+    console.log('Reportes obtenidos:', data);
 
     if (!Array.isArray(data)) {
       throw new Error('Los datos no son un array');
@@ -182,36 +177,63 @@ const cargarReportes = async (endpoint, map) => {
     });
   } catch (error) {
     console.error("Error cargando reportes:", error);
-    alert('No se pudieron cargar los reportes: ' + error.message);
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Error al cargar reportes',
+      text: 'No se pudieron cargar los reportes: ' + error.message
+    });
   }
 };
 
-// Llamar a la función para cargar reportes
+// Cargar reportes
 cargarReportes('/reportes/getall', map);
 
 // Configurar eventos de ubicación
 map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
 
-
 map.locate({ setView: true, maxZoom: 16 });
 
 ///-------------------BOTON DE EMERGENCIA----------------------------//
 document.getElementById("btn-emergencia").addEventListener("click", async () => {
   const idUsuario = Number(localStorage.getItem("usuarioId"));
-  if (!idUsuario) return alert("Iniciá sesión primero.");
+  
+  if (!idUsuario) {
+    Swal.fire({
+      ...swalConfig,
+      icon: 'warning',
+      title: 'Sesión requerida',
+      text: 'Debes iniciar sesión para usar esta función'
+    });
+    return;
+  }
 
   try {
-    // Traer contactos de emergencia desde el backend
+    Swal.fire({
+      ...swalConfig,
+      title: 'Procesando emergencia...',
+      html: 'Obteniendo contactos y ubicación...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     const res = await fetch(`/contactos/${idUsuario}`);
     if (!res.ok) throw new Error("No se pudieron obtener los contactos");
     const contactos = await res.json();
 
     if (!Array.isArray(contactos) || !contactos.length) {
-      return alert("No hay contactos de emergencia guardados");
+      Swal.fire({
+        ...swalConfig,
+        icon: 'warning',
+        title: 'Sin contactos',
+        text: 'No tienes contactos de emergencia guardados. Configúralos en tu perfil.'
+      });
+      return;
     }
 
-    // Obtener ubicación actual
     const ubicacion = await new Promise((resolve, reject) => {
       if (!navigator.geolocation) return reject(new Error("Geolocalización no soportada"));
       navigator.geolocation.getCurrentPosition(
@@ -221,27 +243,215 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       );
     });
 
-    // Enviar mensaje a cada contacto via WhatsApp
+    Swal.close();
+
+    const confirmacion = await Swal.fire({
+      ...swalConfig,
+      icon: 'warning',
+      title: '¿Enviar alerta de emergencia?',
+      text: `Se notificará a ${contactos.length} contacto(s) con tu ubicación actual`,
+      showCancelButton: true,
+      confirmButtonText: 'Sí, enviar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d62839',
+      cancelButtonColor: '#3e2c6d'
+    });
+
+    if (!confirmacion.isConfirmed) return;
+
+    let enviados = 0;
     contactos.forEach(c => {
       let numero = String(c.contacto || "").replace(/[^\d]/g, "");
 
-      // Normalizar formato argentino (ajustar según tu DB)
       if (numero.startsWith("0")) numero = numero.slice(1);
       if (!numero.startsWith("54")) numero = "54" + numero;
-      numero = numero.replace(/^54(11|2\d|3\d)15/, "54$1"); // quita el 15 si existe
+      numero = numero.replace(/^54(11|2\d|3\d)15/, "54$1");
 
-      const mensaje = `¡Ayuda! Estoy en una emergencia. Mi ubicación: https://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}`;
+      const mensaje = `🚨 ¡ALERTA DE EMERGENCIA! 🚨\n\nEstoy en una situación de emergencia. Mi ubicación actual:\n\nhttps://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}\n\n⚠️ Por favor, revisa este mensaje lo antes posible.`;
       const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
       window.open(link, "_blank");
+      enviados++;
+    });
+
+    Swal.fire({
+      ...swalConfig,
+      icon: 'success',
+      title: 'Alertas enviadas',
+      text: `Se han abierto ${enviados} conversación(es) de WhatsApp con tus contactos de emergencia`,
+      confirmButtonColor: '#5b3ea1'
     });
 
   } catch (err) {
-    alert(err.message || err);
+    Swal.close();
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Error',
+      text: err.message || 'Ocurrió un error al procesar la emergencia'
+    });
     console.error(err);
   }
 });
 
+///-------------------FUNCIONALIDAD DE COMISARÍAS----------------------------//
 
+async function cargarComisarias() {
+  try {
+    const response = await fetch('/data/comisarias.geojson');
+    
+    if (!response.ok) {
+      throw new Error('No se pudo cargar el archivo de comisarías');
+    }
+    
+    const geojson = await response.json();
+    mostrarComisarias(geojson);
+    
+  } catch (error) {
+    console.error('Error cargando comisarías:', error);
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Error al cargar comisarías',
+      text: 'No se pudieron cargar las comisarías del mapa'
+    });
+  }
+}
+
+function mostrarComisarias(geojson) {
+  if (comisariasLayer) {
+    map.removeLayer(comisariasLayer);
+  }
+
+  comisariasLayer = L.geoJSON(geojson, {
+    pointToLayer: (feature, latlng) => {
+      return L.marker(latlng, { icon: crearComisariaIcon() });
+    },
+    onEachFeature: (feature, layer) => {
+      const props = feature.properties;
+      
+      let popupContent = `
+        <div style="font-size: 12px; line-height: 1.4;">
+          <b style="color: #7f5bd5ff;">${props.dependencia}</b><br>
+          <b>Localidad:</b> ${props.localidad}<br>
+          <b>Dirección:</b> ${props.direccion}
+        </div>
+      `;
+      
+      layer.bindPopup(popupContent);
+    }
+  }).addTo(map);
+
+  const cantidad = geojson.features.filter(f => f.geometry).length;
+  console.log(`${cantidad} comisarías cargadas en el mapa`);
+}
+
+///-------------------FUNCIONALIDAD DE HOSPITALES----------------------------//
+
+async function cargarHospitales() {
+  try {
+    const response = await fetch('/data/hospitales.geojson');
+    
+    if (!response.ok) {
+      throw new Error('No se pudo cargar el archivo de hospitales');
+    }
+    
+    const geojson = await response.json();
+    mostrarHospitales(geojson);
+    
+  } catch (error) {
+    console.error('Error cargando hospitales:', error);
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Error al cargar hospitales',
+      text: 'No se pudieron cargar los hospitales del mapa'
+    });
+  }
+}
+
+function mostrarHospitales(geojson) {
+  if (hospitalesLayer) {
+    map.removeLayer(hospitalesLayer);
+  }
+
+  hospitalesLayer = L.geoJSON(geojson, {
+    pointToLayer: (feature, latlng) => {
+      return L.marker(latlng, { icon: crearHospitalIcon() });
+    },
+    onEachFeature: (feature, layer) => {
+      const props = feature.properties;
+      
+      let popupContent = `
+        <div style="font-size: 12px; line-height: 1.4;">
+          <b style="color: #7f5bd5ff;">${props.nor}</b><br>
+          <b>Categoría:</b> ${props.cat}<br>
+          <b>Dirección:</b> ${props.dom}<br>
+          <b>Localidad:</b> ${props.nrs}
+        </div>
+      `;
+      
+      layer.bindPopup(popupContent);
+    }
+  }).addTo(map);
+
+  const cantidad = geojson.features.filter(f => f.geometry).length;
+  console.log(`${cantidad} hospitales cargados en el mapa`);
+}
+
+///-------------------EVENT LISTENERS BOTONES FILTRO----------------------------//
+
+document.querySelector('[data-filter="comisarias"]').addEventListener('click', function() {
+  const btnComisarias = this;
+  
+  btnComisarias.classList.toggle('active');
+  
+  if (btnComisarias.classList.contains('active')) {
+    cargarComisarias();
+  } else {
+    if (comisariasLayer) {
+      map.removeLayer(comisariasLayer);
+      comisariasLayer = null;
+    }
+  }
+});
+
+document.querySelector('[data-filter="hospitales"]').addEventListener('click', function() {
+  const btnHospitales = this;
+  
+  btnHospitales.classList.toggle('active');
+  
+  if (btnHospitales.classList.contains('active')) {
+    cargarHospitales();
+  } else {
+    if (hospitalesLayer) {
+      map.removeLayer(hospitalesLayer);
+      hospitalesLayer = null;
+    }
+  }
+});
+
+///-------------------MENU DROPDOWN----------------------------//
+
+document.getElementById("userBtn").addEventListener("click", () => {
+  document.getElementById("menuDropdown").classList.toggle("hidden");
+});
+
+window.addEventListener("click", (e) => {
+  if (!e.target.closest(".user-menu")) {
+    document.getElementById("menuDropdown").classList.add("hidden");
+  }
+});
+
+var destinoMarker;
+
+function crearDestinoIcon() {
+  return L.divIcon({
+    className: 'destino-marker',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    html: '<div class="destino-dot"></div>'
+  });
+}
 // === GEOLOCALIZACIÓN Y BOTÓN DE BÚSQUEDA ===
 const input = document.getElementById("searchInput");
 const btnUbicacion = document.getElementById("searchBtn");
