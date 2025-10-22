@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         didOpen: async () => {
           Swal.showLoading();
 
-          const response = await fetch('https://tesis-f5ik.onrender.com/soporte/contacto', {
+          const response = await fetch('https://tesis-f5ik.onrender.com/contacto', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, email, asunto, mensaje }),
