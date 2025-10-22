@@ -231,6 +231,17 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
     
     const contactos = await res.json();
     console.log('Contactos obtenidos:', contactos);
+    
+    // Guardar ubicación del mapa como fallback
+    let ubicacionFallback = null;
+    if (marker && marker.getLayers && marker.getLayers().length > 0) {
+      const markerLayer = marker.getLayers().find(layer => layer instanceof L.Marker);
+      if (markerLayer) {
+        const latlng = markerLayer.getLatLng();
+        ubicacionFallback = { lat: latlng.lat, lon: latlng.lng };
+        console.log('Ubicación fallback del mapa disponible:', ubicacionFallback);
+      }
+    }
 
     if (!Array.isArray(contactos) || contactos.length === 0) {
       Swal.fire({
@@ -254,7 +265,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       const timeoutId = setTimeout(() => {
         if (!ubicacionObtenida) {
           console.log('Timeout de alta precisión, intentando con baja precisión...');
-
+          // Estrategia 2: Si tarda mucho, usar baja precisión
           navigator.geolocation.getCurrentPosition(
             pos => {
               if (!ubicacionObtenida) {
@@ -272,14 +283,15 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
               }
             },
             { 
-              enableHighAccuracy: false, 
+              enableHighAccuracy: false, // Baja precisión = más rápido
               timeout: 5000,
-              maximumAge: 60000 
+              maximumAge: 60000 // Acepta ubicaciones de hace 1 minuto
             }
           );
         }
-      }, 8000); 
+      }, 8000); // Espera 8 segundos antes de cambiar a baja precisión
       
+      // Intento principal con alta precisión
       navigator.geolocation.getCurrentPosition(
         pos => {
           if (!ubicacionObtenida) {
