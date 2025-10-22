@@ -191,7 +191,7 @@ header{
   position: relative;
 }
 
-.fecha input[type="date"] {
+.fecha input[type="date"], .localidad{
   width: 100%;
   padding: 15px 13px;
   border: none;
