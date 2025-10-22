@@ -181,7 +181,7 @@ header{
 .usuario input,
 .contraseña input,
 .correo input,
-.localidad input{
+.localidad select{
   width: 100%;
   padding-right: 40px;
 }
