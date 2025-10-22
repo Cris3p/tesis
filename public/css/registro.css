@@ -158,7 +158,8 @@ header{
 
 .usuario i,
 .contraseña i,
-.correo i {
+.correo i,
+.localidad i{
     position: absolute;
     right: 15px;
     bottom: 10px;
@@ -171,12 +172,14 @@ header{
 
 .usuario,
 .contraseña,
-.correo {
+.correo,
+.localidad {
     position: relative;
 }
 .usuario input,
 .contraseña input,
-.correo input{
+.correo input,
+.localidad input{
   width: 100%;
   padding-right: 40px;
 }
@@ -397,14 +400,16 @@ input:-webkit-autofill {
     
     .usuario i,
     .contraseña i,
-    .correo i {
+    .correo i,
+    .localidad i{
         font-size: 18px;
         right: 12px;
     }
     
     .usuario input,
     .contraseña input,
-    .correo input {
+    .correo input,
+    .localidad i{
         padding-right: 35px;
     }
     
