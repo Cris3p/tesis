@@ -94,14 +94,13 @@ function iniciarSeguimientoUbicacion() {
     return;
   }
 
-  navigator.geolocation.watchPosition(
+  navigator.geolocation.getCurrentPosition(
     (pos) => {
       const coords = {
         latlng: L.latLng(pos.coords.latitude, pos.coords.longitude),
         accuracy: pos.coords.accuracy
       };
       onLocationFound(coords);
-      console.log('Ubicación actualizada:', pos.coords);
     },
     (err) => {
       onLocationError(err);
@@ -570,3 +569,248 @@ window.addEventListener("click", (e) => {
     document.getElementById("menuDropdown").classList.add("hidden");
   }
 });
+
+// === GEOLOCALIZACIÓN Y BOTÓN DE BÚSQUEDA ===
+const input = document.getElementById("searchInput");
+const btnUbicacion = document.getElementById("searchBtn");
+const suggestionsBox = document.getElementById("suggestions");
+
+input.parentNode.appendChild(suggestionsBox); // Adjuntarlo al input
+
+// === MODIFICAR EL EVENTO DEL BOTÓN DE BÚSQUEDA ===
+btnUbicacion.addEventListener("click", async () => {
+  try {
+    // Primero obtener la ubicación actual y ESPERAR
+    ubicacionActual = await obtenerUbicacionActual();
+    console.log("Ubicación actual obtenida:", ubicacionActual);
+    
+    // Ahora sí ejecutar la búsqueda si hay texto
+    const query = input.value.trim();
+    if (query) {
+      await buscarDireccionFinal(query);
+    }
+  } catch (error) {
+    console.error("Error en búsqueda:", error);
+    alert("No se pudo obtener tu ubicación para calcular la ruta");
+  }
+});
+
+// Función para buscar y dibujar la ruta al presionar el botón de búsqueda
+async function buscarDireccionFinal(query) {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=ar`,
+      { headers: { "User-Agent": "OnTrack-App" } }
+    );
+    const data = await res.json();
+    const place = data[0];
+    
+    if (place) {
+      await irADestino(place);
+    } else {
+      alert("No se encontró la ubicación buscada");
+    }
+  } catch (error) {
+    console.error("Error en búsqueda:", error);
+    alert("Error al buscar la ubicación");
+  }
+}
+
+// === SUGERENCIAS DE DIRECCIONES (LÓGICA AVANZADA DE buscadorRuta.js) ===
+input.addEventListener("input", async function () {
+  const query = this.value.trim();
+  suggestionsBox.innerHTML = "";
+
+  if (query.length < 3) {
+    suggestionsBox.style.display = "none";
+    return;
+  }
+
+  try {
+    // Asegurarse de tener ubicación actual antes de buscar
+    if (!ubicacionActual) {
+      ubicacionActual = await obtenerUbicacionActual();
+    }
+
+    let params = `format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=10&countrycodes=ar`;
+
+    if (ubicacionActual) {
+      const lat = ubicacionActual.lat;
+      const lon = ubicacionActual.lon;
+      const viewbox = `${lon - 0.1},${lat - 0.1},${lon + 0.1},${lat + 0.1}`; // Un poco más amplio
+      params += `&viewbox=${viewbox}&bounded=1`;
+    } else {
+      // Priorizar Argentina si no tenemos ubicación (fallback)
+      params += `&viewbox=-75,-55,-55,-20&bounded=0`;
+    }
+
+    const url = `https://nominatim.openstreetmap.org/search?${params}`;
+
+
+    const res = await fetch(url, { headers: { "User-Agent": "OnTrack-App" } });
+
+    if (!res.ok) throw new Error(`Error HTTP: ${res.status}`);
+
+    const data = await res.json();
+
+    data.forEach((item) => {
+      const li = document.createElement("li");
+      li.className = "suggestion";
+      li.textContent = item.display_name;
+      
+      // Prevenir que el blur oculte las sugerencias antes del click
+      li.addEventListener("mousedown", (e) => {
+        e.preventDefault(); // Evita que el input pierda el foco
+      });
+      
+      li.addEventListener("click", async () => {
+        input.value = item.display_name;
+        suggestionsBox.innerHTML = "";
+        suggestionsBox.style.display = "none";
+
+        // Asegurar que tenemos ubicación actual
+        if (!ubicacionActual) {
+          ubicacionActual = await obtenerUbicacionActual();
+        }
+
+        const origen = `${ubicacionActual.lat},${ubicacionActual.lon}`;
+        await obtenerRutaSegura(origen, `${item.lat},${item.lon}`, 'foot');
+      });
+      suggestionsBox.appendChild(li);
+    });
+
+    suggestionsBox.style.display = "block";
+  } catch (err) {
+    console.error("Error al buscar sugerencias:", err);
+  }
+});
+
+input.addEventListener("blur", () => {
+  // Aumentar el tiempo para permitir que el click se registre
+  setTimeout(() => { suggestionsBox.style.display = "none"; }, 300);
+});
+
+
+// ------------------- FUNCION PARA MOSTRAR LA RUTA ------------------- //
+
+
+async function irADestino(place) {
+  if (!place || !place.lat || !place.lon) return;
+  
+  const destino = L.latLng(place.lat, place.lon);
+
+  // Marcar destino
+  if (destinoMarker) map.removeLayer(destinoMarker);
+  destinoMarker = L.marker(destino, { icon: crearDestinoIcon() }).addTo(map).bindPopup("Destino").openPopup();
+
+  try {
+    // Obtener ubicación actual
+    if (!ubicacionActual) {
+      ubicacionActual = await obtenerUbicacionActual();
+    }
+    
+    const origen = `${ubicacionActual.lat},${ubicacionActual.lon}`;
+    console.log("Calculando ruta desde:", origen, "hacia:", `${destino.lat},${destino.lng}`);
+    
+    await obtenerRutaSegura(origen, `${destino.lat},${destino.lng}`, 'foot');
+  } catch (err) {
+    console.error("Error al calcular ruta:", err);
+    alert("No se pudo calcular la ruta");
+  }
+}
+
+class PriorityQueue {
+  constructor() { this.elements = []; }
+  enqueue(element, priority) { this.elements.push({ element, priority }); this.elements.sort((a, b) => a.priority - b.priority); }
+  dequeue() { return this.elements.shift(); }
+  isEmpty() { return this.elements.length === 0; }
+}
+
+function dijkstra(graph, start, end) {
+  const distances = { [start]: 0 };
+  const prev = {};
+  const pq = new PriorityQueue();
+  pq.enqueue(start, 0);
+
+  while (!pq.isEmpty()) {
+    const u = pq.dequeue().element;
+    if (u === end) break;
+    for (let neighbor in graph[u]) {
+      const alt = distances[u] + graph[u][neighbor];
+      if (!distances[neighbor] || alt < distances[neighbor]) {
+        distances[neighbor] = alt;
+        prev[neighbor] = u;
+        pq.enqueue(neighbor, alt);
+      }
+    }
+  }
+
+  let path = [];
+  let u = end;
+  while (u !== undefined) { path.push(u); u = prev[u]; }
+  return path.reverse();
+}
+
+function buildGraphFromGeoJSON(geojson) {
+  const graph = {};
+  geojson.features.forEach((feature, index) => {
+    const id = `node_${index}`;
+    graph[id] = {};
+    geojson.features.forEach((otherFeature, otherIndex) => {
+      if (index !== otherIndex) {
+        const dist = distanciaMetros(feature.geometry.coordinates[0], otherFeature.geometry.coordinates[0]);
+        if (dist < 100) graph[id][`node_${otherIndex}`] = dist;
+      }
+    });
+  });
+  return graph;
+}
+
+function distanciaMetros(a, b) {
+  const R = 6371e3;
+  const rad = x => (x * Math.PI) / 180;
+  const φ1 = rad(a[1]);
+  const φ2 = rad(b[1]);
+  const Δφ = rad(b[1] - a[1]);
+  const Δλ = rad(b[0] - a[0]);
+  const d =
+    Math.sin(Δφ / 2) ** 2 +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+  return 2 * R * Math.atan2(Math.sqrt(d), Math.sqrt(1 - d));
+}
+
+// Cargar GeoJSON
+fetch('/rutas/segura/tortuGB.geojson')
+  .then(response => response.json())
+  .then(geojson => {
+    const graph = buildGraphFromGeoJSON(geojson);
+
+    // Ejemplo: Calcular ruta al hacer clic
+    map.on('click', function (e) {
+      const start = L.latLng(pos.coords.latitude, pos.coords.longitude).toString()
+      const end = e.latlng;
+      let startNode = null, endNode = null;
+      geojson.features.forEach((feature, index) => {
+        const coords = feature.geometry.coordinates[0];
+        if (distanciaMetros([coords[1], coords[0]], [start.lat, start.lng]) < 100) startNode = `node_${index}`;
+        if (distanciaMetros([coords[1], coords[0]], [end.lat, end.lng]) < 100) endNode = `node_${index}`;
+      });
+      if (startNode && endNode) {
+        const path = dijkstra(graph, startNode, endNode);
+        const coords = path.map(nodeId => geojson.features[parseInt(nodeId.split('_')[1])].geometry.coordinates[0].map(c => [c[1], c[0]]));
+        L.polyline(coords.flat(), { color: "#ffffffff", weight: 5 }).addTo(map);
+      }
+    });
+  });
+
+iniciarSeguimientoUbicacion();
+
+// === INICIALIZAR UBICACIÓN AL CARGAR LA PÁGINA ===
+(async () => {
+  try {
+    ubicacionActual = await obtenerUbicacionActual();
+    console.log("Ubicación inicial cargada:", ubicacionActual);
+  } catch (error) {
+    console.error("No se pudo obtener ubicación inicial:", error);
+  }
+})();
