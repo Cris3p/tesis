@@ -26,9 +26,6 @@ exports.actualizarContacto = async (id, contacto, nombre) => {
     );
 };
 
-// NUEVAS FUNCIONES PARA VALIDACIONES
-
-// Verificar si un contacto ya existe para un usuario (por teléfono)
 exports.verificarContactoExistente = async (id_usuario, contacto) => {
     const [rows] = await db.query(
         "SELECT ID_contactos FROM contactos WHERE FK_ID_usuarios = ? AND contacto = ?",
@@ -37,7 +34,6 @@ exports.verificarContactoExistente = async (id_usuario, contacto) => {
     return rows.length > 0;
 };
 
-// Verificar si un contacto existe por ID
 exports.verificarContactoExistePorId = async (id) => {
     const [rows] = await db.query(
         "SELECT ID_contactos FROM contactos WHERE ID_contactos = ?",
@@ -46,7 +42,6 @@ exports.verificarContactoExistePorId = async (id) => {
     return rows.length > 0;
 };
 
-// Obtener un contacto específico por ID
 exports.obtenerContactoPorId = async (id) => {
     const [rows] = await db.query(
         "SELECT * FROM contactos WHERE ID_contactos = ?",
@@ -55,7 +50,6 @@ exports.obtenerContactoPorId = async (id) => {
     return rows.length > 0 ? rows[0] : null;
 };
 
-// Contar cuántos contactos tiene un usuario
 exports.contarContactos = async (id_usuario) => {
     const [rows] = await db.query(
         "SELECT COUNT(*) as total FROM contactos WHERE FK_ID_usuarios = ?",

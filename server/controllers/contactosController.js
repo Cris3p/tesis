@@ -1,10 +1,8 @@
 const contactosModel = require("../models/contactosModel");
 
-// Función helper para validar y normalizar teléfono argentino
 function validarYNormalizarTelefono(telefono) {
     // Limpiar el número (solo dígitos)
     let numeroLimpio = String(telefono || "").replace(/[^\d]/g, "");
-    
     console.log(`Validando teléfono: "${telefono}" → "${numeroLimpio}"`);
     
     // Validaciones básicas
@@ -76,14 +74,12 @@ exports.agregarContacto = async (req, res) => {
     try {
         const { id_usuario, contacto, nombre } = req.body;
         
-        // Validar ID de usuario
         if (!id_usuario || isNaN(id_usuario)) {
             return res.status(400).json({ 
                 message: "ID de usuario inválido" 
             });
         }
         
-        // Validar nombre
         const validacionNombre = validarNombre(nombre);
         if (!validacionNombre.valido) {
             return res.status(400).json({ 
@@ -91,7 +87,6 @@ exports.agregarContacto = async (req, res) => {
             });
         }
         
-        // Validar y normalizar teléfono
         const validacionTelefono = validarYNormalizarTelefono(contacto);
         if (!validacionTelefono.valido) {
             return res.status(400).json({ 
@@ -99,7 +94,6 @@ exports.agregarContacto = async (req, res) => {
             });
         }
         
-        // Verificar si el contacto ya existe para este usuario
         const contactoExistente = await contactosModel.verificarContactoExistente(
             id_usuario, 
             validacionTelefono.numeroNormalizado
@@ -111,14 +105,13 @@ exports.agregarContacto = async (req, res) => {
             });
         }
         
-        // Agregar contacto con datos normalizados
         await contactosModel.agregarContacto(
             id_usuario, 
             validacionTelefono.numeroNormalizado, 
             validacionNombre.nombreNormalizado
         );
         
-        console.log(`✅ Contacto agregado: ${validacionNombre.nombreNormalizado} - ${validacionTelefono.numeroNormalizado}`);
+        console.log(`Contacto agregado: ${validacionNombre.nombreNormalizado} - ${validacionTelefono.numeroNormalizado}`);
         
         res.status(201).json({ 
             message: "Contacto agregado correctamente",
@@ -145,7 +138,7 @@ exports.getContactosByUsuario = async (req, res) => {
         
         const contactos = await contactosModel.getContactosByUsuario(id_usuario);
         
-        console.log(`📋 Contactos obtenidos para usuario ${id_usuario}: ${contactos.length}`);
+        console.log(`Contactos obtenidos para usuario ${id_usuario}: ${contactos.length}`);
         
         res.json(contactos);
     } catch (error) {
@@ -163,8 +156,6 @@ exports.eliminarContacto = async (req, res) => {
                 message: "ID de contacto inválido" 
             });
         }
-        
-        // Verificar que el contacto existe antes de eliminar
         const contactoExiste = await contactosModel.verificarContactoExistePorId(id);
         
         if (!contactoExiste) {
@@ -175,7 +166,7 @@ exports.eliminarContacto = async (req, res) => {
         
         await contactosModel.eliminarContacto(id);
         
-        console.log(`🗑️ Contacto eliminado: ID ${id}`);
+        console.log(`Contacto eliminado: ID ${id}`);
         
         res.json({ message: "Contacto eliminado correctamente" });
     } catch (error) {
@@ -195,7 +186,6 @@ exports.actualizarContacto = async (req, res) => {
             });
         }
         
-        // Verificar que el contacto existe
         const contactoExiste = await contactosModel.verificarContactoExistePorId(id);
         
         if (!contactoExiste) {
@@ -204,7 +194,6 @@ exports.actualizarContacto = async (req, res) => {
             });
         }
         
-        // Validar nombre
         const validacionNombre = validarNombre(nombre);
         if (!validacionNombre.valido) {
             return res.status(400).json({ 
@@ -212,7 +201,6 @@ exports.actualizarContacto = async (req, res) => {
             });
         }
         
-        // Validar y normalizar teléfono
         const validacionTelefono = validarYNormalizarTelefono(contacto);
         if (!validacionTelefono.valido) {
             return res.status(400).json({ 
@@ -220,14 +208,13 @@ exports.actualizarContacto = async (req, res) => {
             });
         }
         
-        // Actualizar con datos normalizados
         await contactosModel.actualizarContacto(
             id, 
             validacionTelefono.numeroNormalizado, 
             validacionNombre.nombreNormalizado
         );
         
-        console.log(`✏️ Contacto actualizado: ID ${id} - ${validacionNombre.nombreNormalizado} - ${validacionTelefono.numeroNormalizado}`);
+        console.log(`Contacto actualizado: ID ${id} - ${validacionNombre.nombreNormalizado} - ${validacionTelefono.numeroNormalizado}`);
         
         res.json({ 
             message: "Contacto actualizado correctamente",

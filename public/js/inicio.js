@@ -211,17 +211,6 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
     return;
   }
 
-  // Mostrar loading mientras se procesa
-  Swal.fire({
-    ...swalConfig,
-    title: 'Procesando emergencia...',
-    text: 'Obteniendo contactos y ubicación',
-    allowOutsideClick: false,
-    didOpen: () => {
-      Swal.showLoading();
-    }
-  });
-
   try {
     const res = await fetch(`/contactos/${idUsuario}`);
     
@@ -230,7 +219,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
     }
     
     const contactos = await res.json();
-    console.log('📋 Contactos obtenidos:', contactos);
+    console.log('Contactos obtenidos:', contactos);
     
     // Guardar ubicación del mapa como fallback
     let ubicacionFallback = null;
@@ -239,7 +228,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       if (markerLayer) {
         const latlng = markerLayer.getLatLng();
         ubicacionFallback = { lat: latlng.lat, lon: latlng.lng };
-        console.log('📍 Ubicación fallback del mapa disponible:', ubicacionFallback);
+        console.log('Ubicación fallback del mapa disponible:', ubicacionFallback);
       }
     }
 
@@ -263,16 +252,14 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
         
         let ubicacionObtenida = false;
         
-        // Estrategia 1: Intentar con alta precisión primero
         const timeoutId = setTimeout(() => {
           if (!ubicacionObtenida) {
-            console.log('⏱️ Timeout de alta precisión, intentando con baja precisión...');
-            // Estrategia 2: Si tarda mucho, usar baja precisión
+            console.log('Timeout de alta precisión, intentando con baja precisión...');
             navigator.geolocation.getCurrentPosition(
               pos => {
                 if (!ubicacionObtenida) {
                   ubicacionObtenida = true;
-                  console.log('✅ Ubicación obtenida con baja precisión');
+                  console.log('Ubicación obtenida con baja precisión');
                   resolve({ 
                     lat: pos.coords.latitude, 
                     lon: pos.coords.longitude 
@@ -293,13 +280,12 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
           }
         }, 8000);
         
-        // Intento principal con alta precisión
         navigator.geolocation.getCurrentPosition(
           pos => {
             if (!ubicacionObtenida) {
               ubicacionObtenida = true;
               clearTimeout(timeoutId);
-              console.log('✅ Ubicación obtenida con alta precisión');
+              console.log('Ubicación obtenida con alta precisión');
               resolve({ 
                 lat: pos.coords.latitude, 
                 lon: pos.coords.longitude 
@@ -307,7 +293,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
             }
           },
           err => {
-            console.log('⚠️ Error en alta precisión:', err.message);
+            console.log('Error en alta precisión:', err.message);
           },
           { 
             enableHighAccuracy: true,
@@ -317,69 +303,51 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
         );
       });
     } catch (geoError) {
-      // Si falla la geolocalización, usar ubicación del mapa como último recurso
       if (ubicacionFallback) {
-        console.log('📍 Usando ubicación del mapa como fallback');
+        console.log('Usando ubicación del mapa como fallback');
         ubicacion = ubicacionFallback;
-        
-        await Swal.fire({
-          ...swalConfig,
-          icon: 'info',
-          title: 'Usando ubicación aproximada',
-          text: 'Se usará tu última ubicación visible en el mapa',
-          timer: 2000,
-          showConfirmButton: false
-        });
       } else {
         throw new Error("No se pudo obtener ninguna ubicación. Verifica los permisos de ubicación.");
       }
     }
 
-    console.log('📍 Ubicación final:', ubicacion);
-    Swal.close();
+    console.log('Ubicación obtenida:', ubicacion);
 
     // Función para normalizar números argentinos para WhatsApp
     function normalizarNumeroWhatsApp(numeroOriginal) {
       let numero = String(numeroOriginal || "").replace(/[^\d]/g, "");
       
-      console.log(`📱 Procesando: "${numeroOriginal}" → "${numero}"`);
+      console.log(`Procesando número: "${numeroOriginal}" -> "${numero}"`);
       
       if (numero.length === 0) {
-        console.warn('⚠️ Número vacío');
+        console.warn('Número vacío');
         return null;
       }
 
-      // Remover código de país si existe
       if (numero.startsWith("54")) {
         numero = numero.substring(2);
       }
 
-      // Remover 0 inicial
       if (numero.startsWith("0")) {
         numero = numero.substring(1);
       }
 
-      // Remover el 15 si está al inicio
       if (numero.startsWith("15")) {
         numero = numero.substring(2);
       }
 
-      // Validar longitud mínima
       if (numero.length < 10) {
-        console.warn(`⚠️ Número muy corto: ${numero} (${numero.length} dígitos)`);
+        console.warn(`Número muy corto: ${numero} (${numero.length} dígitos)`);
         return null;
       }
 
-      // Si es más largo de 10, recortar a 10 dígitos
       if (numero.length > 10) {
-        console.warn(`⚠️ Número largo (${numero.length} dígitos), recortando a 10`);
+        console.warn(`Número largo (${numero.length} dígitos), recortando a 10`);
         numero = numero.substring(0, 10);
       }
 
-      // Construir número en formato internacional para WhatsApp
       const numeroFinal = `54${numero}`;
-      
-      console.log(`✅ Número para WhatsApp: ${numeroFinal} (${numero.length + 2} dígitos totales)`);
+      console.log(`Número final para WhatsApp: ${numeroFinal}`);
       
       return numeroFinal;
     }
@@ -389,104 +357,84 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
     const mensajesEnviados = [];
     const errores = [];
 
-    // Limitar a 3 contactos para evitar rate limit de WhatsApp
     const contactosAEnviar = contactos.slice(0, 3);
     
     if (contactos.length > 3) {
-      console.warn(`⚠️ Solo se enviarán alertas a los primeros 3 contactos (tienes ${contactos.length})`);
+      console.warn(`Solo se enviarán alertas a los primeros 3 contactos (tienes ${contactos.length})`);
     }
 
     contactosAEnviar.forEach((c, index) => {
       const numeroNormalizado = normalizarNumeroWhatsApp(c.contacto);
       
       if (!numeroNormalizado) {
-        console.error(`❌ Número inválido para ${c.nombre}: ${c.contacto}`);
+        console.error(`Número inválido para ${c.nombre}: ${c.contacto}`);
         errores.push(c.nombre || c.contacto);
         return;
       }
 
-      const mensaje = `🚨 *ALERTA DE EMERGENCIA* 🚨
+      const mensaje = `¡ALERTA DE EMERGENCIA!
 
 ${c.nombre ? c.nombre + ', ' : ''}Estoy en una situación de emergencia y necesito ayuda.
 
-📍 *Mi ubicación actual:*
+Mi ubicación actual:
 https://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}
 
-⚠️ *Por favor, revisa este mensaje lo antes posible.*`;
+Por favor, revisa este mensaje lo antes posible.`;
       
-      // Usar la API oficial de WhatsApp
       const link = `https://api.whatsapp.com/send?phone=${numeroNormalizado}&text=${encodeURIComponent(mensaje)}`;
       
-      console.log(`🔗 Link ${index + 1}/${contactosAEnviar.length} para ${c.nombre}:`);
-      console.log(`   ${link}`);
+      console.log(`Link generado para ${c.nombre}: ${link}`);
       
-      // Abrir WhatsApp con delay de 2 segundos entre cada uno
       setTimeout(() => {
         const ventana = window.open(link, "_blank");
         if (!ventana) {
-          console.warn('⚠️ Bloqueador de pop-ups detectado para', c.nombre);
-        } else {
-          console.log(`✅ Ventana abierta para ${c.nombre}`);
+          console.warn('Bloqueador de pop-ups detectado para', c.nombre);
         }
-      }, index * 2000); // 2000ms (2 segundos) entre cada ventana
+      }, index * 2000);
       
       enviados++;
       mensajesEnviados.push(c.nombre || numeroNormalizado);
     });
 
     // Confirmación de envío
-    let mensajeResultado = `
-      <p>Se han abierto <strong>${enviados}</strong> conversación(es) de WhatsApp:</p>
+    let mensajeResultado = `<p>Se han abierto <strong>${enviados}</strong> conversación(es) de WhatsApp:</p>
       <ul style="text-align: left; margin-top: 10px; padding-left: 20px;">
-        ${mensajesEnviados.map(nombre => `<li>✅ ${nombre}</li>`).join('')}
-      </ul>
-    `;
+        ${mensajesEnviados.map(nombre => `<li>${nombre}</li>`).join('')}
+      </ul>`;
     
     if (contactos.length > 3) {
-      mensajeResultado += `
-        <p style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 5px; font-size: 13px;">
-          ℹ️ Se enviaron solo los primeros 3 contactos para evitar bloqueos de WhatsApp. 
+      mensajeResultado += `<p style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 5px; font-size: 13px;">
+          Se enviaron solo los primeros 3 contactos para evitar bloqueos de WhatsApp. 
           Las ventanas se abrirán con 2 segundos de diferencia.
-        </p>
-      `;
+        </p>`;
     }
     
     if (errores.length > 0) {
-      mensajeResultado += `
-        <p style="margin-top: 15px; color: #dc3545;"><strong>⚠️ Números inválidos:</strong></p>
+      mensajeResultado += `<p style="margin-top: 15px; color: #dc3545;"><strong>Números inválidos:</strong></p>
         <ul style="text-align: left; padding-left: 20px;">
-          ${errores.map(nombre => `<li>❌ ${nombre}</li>`).join('')}
+          ${errores.map(nombre => `<li>${nombre}</li>`).join('')}
         </ul>
         <p style="font-size: 13px; color: #6c757d; margin-top: 10px;">
           Por favor, verifica estos contactos en tu perfil.
-        </p>
-      `;
+        </p>`;
     }
 
     Swal.fire({
       ...swalConfig,
       icon: enviados > 0 ? 'success' : 'warning',
-      title: enviados > 0 ? '🚨 Alertas enviadas' : 'Sin alertas enviadas',
+      title: enviados > 0 ? 'Alertas enviadas' : 'Sin alertas enviadas',
       html: mensajeResultado,
-      confirmButtonColor: '#5b3ea1',
-      width: '500px'
+      confirmButtonColor: '#5b3ea1'
     });
 
   } catch (err) {
-    Swal.close();
-    console.error('❌ Error completo:', err);
+    console.error('Error completo:', err);
     
     Swal.fire({
       ...swalConfig,
       icon: 'error',
       title: 'Error',
-      html: `
-        <p>${err.message || 'Ocurrió un error al procesar la emergencia'}</p>
-        <p style="font-size: 13px; color: #6c757d; margin-top: 10px;">
-          Si el problema persiste, verifica tu conexión y permisos de ubicación
-        </p>
-      `,
-      confirmButtonColor: '#5b3ea1'
+      text: err.message || 'Ocurrió un error al procesar la emergencia'
     });
   }
 });
