@@ -87,7 +87,7 @@ exports.obtenerRutaSegura = async (req, res) => {
         duracion_ajustada_s: tiempoAjustado,
       });
     }
-  } catch (err) {
+  }} catch (err) {
     console.error("Error al calcular ruta segura:", err);
     res.status(500).json({ error: "Error interno del servidor." });
   }
