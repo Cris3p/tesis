@@ -590,7 +590,8 @@ input.addEventListener("input", async function () {
 });
 
 input.addEventListener("blur", () => {
-  setTimeout(() => { suggestionsBox.style.display = "none"; }, 150);
+  // Aumentar el tiempo para permitir que el click se registre
+  setTimeout(() => { suggestionsBox.style.display = "none"; }, 300);
 });
 
 // Función irADestino también necesita corrección
