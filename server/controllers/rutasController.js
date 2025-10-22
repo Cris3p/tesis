@@ -35,22 +35,6 @@ exports.obtenerRutaSegura = async (req, res) => {
         if (distanciaMetros(coords, endPoint) < 200) endNode = `node_${index}`;
       });
 
-    if (!rutas || rutas.length === 0) {
-      // Fallback a GeoJSON si OSRM falla
-      const [olat, olon] = origen.split(",").map(Number);
-      const [dlat, dlon] = destino.split(",").map(Number);
-      const startPoint = [olat, olon];
-      const endPoint = [dlat, dlon];
-
-      const graph = buildGraphFromGeoJSON(geojson);
-
-      let startNode = null, endNode = null;
-      geojson.features.forEach((feature, index) => {
-        const coords = feature.geometry.coordinates[0];
-        if (distanciaMetros(coords, startPoint) < 200) startNode = `node_${index}`;
-        if (distanciaMetros(coords, endPoint) < 200) endNode = `node_${index}`;
-      });
-
       if (!startNode || !endNode) {
         return res.status(404).json({ error: "No se encontraron nodos cercanos." });
       }
@@ -87,7 +71,7 @@ exports.obtenerRutaSegura = async (req, res) => {
         duracion_ajustada_s: tiempoAjustado,
       });
     }
-  }} catch (err) {
+  } catch (err) {
     console.error("Error al calcular ruta segura:", err);
     res.status(500).json({ error: "Error interno del servidor." });
   }
