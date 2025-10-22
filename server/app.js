@@ -9,8 +9,11 @@ const fs = require('fs');
 
 const app = express();
 
+app.use(cors({ // Permite peticiones de métodos complejos (PUT, DELETE) desde el navegador
+  origin: true,
+  credentials: true
+}));
 // Configuración de Middlewares
-app.use(cors()); // Permite peticiones de métodos complejos (PUT, DELETE) desde el navegador
 app.use(express.json()); // Permite a Express leer JSON en el cuerpo de las peticiones
 app.use(cookieParser()); // Habilita el manejo de cookies
 app.use(express.static(path.join(__dirname, '../public'))); // Sirve archivos estáticos (HTML, CSS, JS)

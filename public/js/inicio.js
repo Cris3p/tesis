@@ -210,12 +210,29 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
     return;
   }
 
-  try {
-    const res = await fetch(`/contactos/${idUsuario}`);
-    if (!res.ok) throw new Error("No se pudieron obtener los contactos");
-    const contactos = await res.json();
+  // Mostrar loading mientras se procesa
+  Swal.fire({
+    ...swalConfig,
+    title: 'Procesando emergencia...',
+    text: 'Obteniendo contactos y ubicación',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
 
-    if (!Array.isArray(contactos) || !contactos.length === 0) {
+  try {
+    // CAMBIO IMPORTANTE: Usar ruta relativa en lugar de URL absoluta
+    const res = await fetch(`/contactos/${idUsuario}`);
+    
+    if (!res.ok) {
+      throw new Error(`Error ${res.status}: No se pudieron obtener los contactos`);
+    }
+    
+    const contactos = await res.json();
+    console.log('Contactos obtenidos:', contactos);
+
+    if (!Array.isArray(contactos) || contactos.length === 0) {
       Swal.fire({
         ...swalConfig,
         icon: 'warning',
@@ -225,55 +242,123 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       return;
     }
 
+    // Obtener ubicación actual con estrategia dual
     const ubicacion = await new Promise((resolve, reject) => {
-      if (!navigator.geolocation) return reject(new Error("Geolocalización no soportada"));
+      if (!navigator.geolocation) {
+        return reject(new Error("Geolocalización no soportada"));
+      }
+      
+      let ubicacionObtenida = false;
+      
+      // Estrategia 1: Intentar con alta precisión primero (rápido)
+      const timeoutId = setTimeout(() => {
+        if (!ubicacionObtenida) {
+          console.log('Timeout de alta precisión, intentando con baja precisión...');
+
+          navigator.geolocation.getCurrentPosition(
+            pos => {
+              if (!ubicacionObtenida) {
+                ubicacionObtenida = true;
+                console.log('Ubicación obtenida con baja precisión');
+                resolve({ 
+                  lat: pos.coords.latitude, 
+                  lon: pos.coords.longitude 
+                });
+              }
+            },
+            err => {
+              if (!ubicacionObtenida) {
+                reject(new Error("No se pudo obtener ubicación: " + err.message));
+              }
+            },
+            { 
+              enableHighAccuracy: false, 
+              timeout: 5000,
+              maximumAge: 60000 
+            }
+          );
+        }
+      }, 8000); 
+      
       navigator.geolocation.getCurrentPosition(
-        pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
-        err => reject(new Error("Error al obtener ubicación: " + err.message)),
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        pos => {
+          if (!ubicacionObtenida) {
+            ubicacionObtenida = true;
+            clearTimeout(timeoutId);
+            console.log('Ubicación obtenida con alta precisión');
+            resolve({ 
+              lat: pos.coords.latitude, 
+              lon: pos.coords.longitude 
+            });
+          }
+        },
+        err => {
+          // No rechazamos aquí, dejamos que el timeout active el plan B
+          console.log('Error en alta precisión:', err.message);
+        },
+        { 
+          enableHighAccuracy: true,
+          timeout: 15000, // 15 segundos para alta precisión
+          maximumAge: 0 
+        }
       );
     });
 
+    console.log('Ubicación obtenida:', ubicacion);
     Swal.close();
 
+    // Procesar y enviar mensajes a contactos
     let enviados = 0;
+    const mensajesEnviados = [];
+
     contactos.forEach(c => {
       let numero = String(c.contacto || "").replace(/[^\d]/g, "");
 
+      // Normalizar número argentino
       if (numero.startsWith("0")) numero = numero.slice(1);
       if (!numero.startsWith("54")) numero = "54" + numero;
       numero = numero.replace(/^54(11|2\d|3\d)15/, "54$1");
 
-      const mensaje = `¡ALERTA DE EMERGENCIA!\n\nEstoy en una situación de emergencia. Mi ubicación actual:\n\nhttps://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}\n\n Por favor, revisa este mensaje lo antes posible.`;
+      const mensaje = `¡ALERTA DE EMERGENCIA!\n\n${c.nombre ? c.nombre + ', ' : ''}Estoy en una situación de emergencia.\n\nMi ubicación actual:\nhttps://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}\n\n⚠️ Por favor, revisa este mensaje lo antes posible.`;
+      
       const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-
-       setTimeout(() => {
+      
+      // Abrir WhatsApp con un pequeño delay entre ventanas
+      setTimeout(() => {
         window.open(link, "_blank");
-      }, enviados * 300);
-
+      }, enviados * 300); // 300ms entre cada ventana
+      
       enviados++;
+      mensajesEnviados.push(c.nombre || numero);
     });
 
+    // Confirmación de envío
     Swal.fire({
       ...swalConfig,
       icon: 'success',
       title: 'Alertas enviadas',
-      text: `Se han abierto ${enviados} conversación(es) de WhatsApp con tus contactos de emergencia`,
+      html: `
+        <p>Se han abierto ${enviados} conversación(es) de WhatsApp:</p>
+        <ul style="text-align: left; margin-top: 10px;">
+          ${mensajesEnviados.map(nombre => `<li>${nombre}</li>`).join('')}
+        </ul>
+      `,
       confirmButtonColor: '#5b3ea1'
     });
 
   } catch (err) {
     Swal.close();
+    console.error('Error completo:', err);
+    
     Swal.fire({
       ...swalConfig,
       icon: 'error',
       title: 'Error',
-      text: err.message || 'Ocurrió un error al procesar la emergencia'
+      text: err.message || 'Ocurrió un error al procesar la emergencia',
+      footer: 'Si el problema persiste, verifica tu conexión y permisos de ubicación'
     });
-    console.error(err);
   }
 });
-
 ///-------------------FUNCIONALIDAD DE COMISARÍAS----------------------------//
 
 async function cargarComisarias() {
