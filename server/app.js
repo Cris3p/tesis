@@ -22,6 +22,7 @@ const contactosRoutes = require('./routes/contactosRoutes');
 const reportesRoutes = require('./routes/reportesRoutes');
 const estadisticasRoutes = require('./routes/estadisticasRoutes');
 const soporteRoutes = require("./routes/soporteRoutes");
+const rutasController = require('./controllers/rutasController.js');
 
 // Definición de rutas
 app.use('/reportes', reportesRoutes);

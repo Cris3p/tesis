@@ -435,6 +435,26 @@ body, html {
   transform: scale(1.2);
 }
 
+.destino-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.destino-dot {
+  width: 14px;
+  height: 14px;
+  background: var(--violeta-claro);
+  border-radius: 50%;
+  border: 2px solid var(--texto);
+  box-shadow: 0 0 10px rgba(138, 117, 201, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.destino-marker:hover .destino-dot {
+  transform: scale(1.2);
+}
+
 @media (max-width: 768px) {
   .search-controls {
     left: 10px;
@@ -1268,4 +1288,48 @@ body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
 
 body.swal2-height-auto {
   height: 100vh !important;
+}
+
+
+#tiempoPanel {
+  position: absolute;
+  bottom: 70px;
+  left: 20px;
+  background: var(--negro-secundario);
+  border: 1px solid var(--violeta-principal);
+  border-radius: 12px;
+  padding: 12px 20px;
+  color: var(--texto);
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: none;
+}
+
+#tiempoPanel.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#tiempoPanel strong {
+  color: var(--violeta-vivo);
+}
+
+#modeSwitch {
+  background: var(--violeta-principal);
+  border: none;
+  color: var(--texto);
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+#modeSwitch:hover {
+  background: var(--violeta-vivo);
 }
