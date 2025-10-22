@@ -79,15 +79,15 @@ function onLocationFound(e) {
   map.setView(e.latlng, 16);
 }
 
-function onLocationError(e) {
-  Swal.fire({
-    ...swalConfig,
-    icon: 'error',
-    title: 'Error de ubicación',
-    text: 'No se pudo obtener tu ubicación: ' + e.message
-  });
-  console.error('Error de geolocalización:', e);
-}
+// function onLocationError(e) {
+//   Swal.fire({
+//     ...swalConfig,
+//     icon: 'error',
+//     title: 'Error de ubicación',
+//     text: 'No se pudo obtener tu ubicación: ' + e.message
+//   });
+//   console.error('Error de geolocalización:', e);
+// }
 
 function iniciarSeguimientoUbicacion() {
   if (!navigator.geolocation) {
