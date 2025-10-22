@@ -452,7 +452,7 @@ function distanciaMetros(a, b) {
 }
 
 // Cargar GeoJSON
-fetch('https://tesis-f5ik.onrender.com/rutas/segura/tortuGB.geojson')
+fetch('/rutas/segura/tortuGB.geojson')
   .then(response => response.json())
   .then(geojson => {
     const graph = buildGraphFromGeoJSON(geojson);
