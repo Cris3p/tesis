@@ -12,7 +12,7 @@ exports.obtenerRutaSegura = async (req, res) => {
       return res.status(400).json({ error: "Faltan parámetros: origen y destino." });
     }
    try {
-    const basePath = path.join(process.cwd(), '../','public', 'data', 'tortuGB.geojson');
+    const basePath = path.join(process.cwd(), '..','public', 'data', 'tortuGB.geojson');
     console.log("Intentando leer archivo en:", basePath);
     const geojsonData = await fs.readFileSync(basePath, 'utf8');
     const geojson = JSON.parse(geojsonData);
