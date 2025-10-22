@@ -457,9 +457,40 @@ const input = document.getElementById("searchInput");
 const btnUbicacion = document.getElementById("searchBtn");
 const suggestionsBox = document.getElementById("suggestions");
 
-input.parentNode.appendChild(suggestionsBox); // Adjuntarlo al input
+input.parentNode.appendChild(suggestionsBox);
 
-// === MODIFICAR EL EVENTO DEL BOTÓN DE BÚSQUEDA ===
+// Función para obtener ubicación actual con Promise
+function obtenerUbicacionActual() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Geolocalización no soportada"));
+      return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const ubicacion = { 
+          lat: pos.coords.latitude, 
+          lon: pos.coords.longitude 
+        };
+        resolve(ubicacion);
+      },
+      (err) => {
+        console.error("Error obteniendo ubicación:", err);
+        // Fallback: usar centro del mapa
+        const center = map.getCenter();
+        resolve({ lat: center.lat, lon: center.lng });
+      },
+      { 
+        enableHighAccuracy: true, 
+        timeout: 10000, 
+        maximumAge: 30000 
+      }
+    );
+  });
+}
+
+// Evento del botón - CORREGIDO con async/await
 btnUbicacion.addEventListener("click", async () => {
   try {
     // Primero obtener la ubicación actual y ESPERAR
@@ -477,7 +508,7 @@ btnUbicacion.addEventListener("click", async () => {
   }
 });
 
-// Función para buscar y dibujar la ruta al presionar el botón de búsqueda
+// Función para buscar y dibujar la ruta
 async function buscarDireccionFinal(query) {
   try {
     const res = await fetch(
@@ -498,7 +529,7 @@ async function buscarDireccionFinal(query) {
   }
 }
 
-// === SUGERENCIAS DE DIRECCIONES (LÓGICA AVANZADA DE buscadorRuta.js) ===
+// === SUGERENCIAS DE DIRECCIONES ===
 input.addEventListener("input", async function () {
   const query = this.value.trim();
   suggestionsBox.innerHTML = "";
@@ -519,16 +550,13 @@ input.addEventListener("input", async function () {
     if (ubicacionActual) {
       const lat = ubicacionActual.lat;
       const lon = ubicacionActual.lon;
-      const viewbox = `${lon - 0.1},${lat - 0.1},${lon + 0.1},${lat + 0.1}`; // Un poco más amplio
+      const viewbox = `${lon - 0.1},${lat - 0.1},${lon + 0.1},${lat + 0.1}`;
       params += `&viewbox=${viewbox}&bounded=1`;
     } else {
-      // Priorizar Argentina si no tenemos ubicación (fallback)
       params += `&viewbox=-75,-55,-55,-20&bounded=0`;
     }
 
     const url = `https://nominatim.openstreetmap.org/search?${params}`;
-
-
     const res = await fetch(url, { headers: { "User-Agent": "OnTrack-App" } });
 
     if (!res.ok) throw new Error(`Error HTTP: ${res.status}`);
@@ -539,12 +567,6 @@ input.addEventListener("input", async function () {
       const li = document.createElement("li");
       li.className = "suggestion";
       li.textContent = item.display_name;
-      
-      // Prevenir que el blur oculte las sugerencias antes del click
-      li.addEventListener("mousedown", (e) => {
-        e.preventDefault(); // Evita que el input pierda el foco
-      });
-      
       li.addEventListener("click", async () => {
         input.value = item.display_name;
         suggestionsBox.innerHTML = "";
@@ -568,14 +590,10 @@ input.addEventListener("input", async function () {
 });
 
 input.addEventListener("blur", () => {
-  // Aumentar el tiempo para permitir que el click se registre
-  setTimeout(() => { suggestionsBox.style.display = "none"; }, 300);
+  setTimeout(() => { suggestionsBox.style.display = "none"; }, 150);
 });
 
-
-// ------------------- FUNCION PARA MOSTRAR LA RUTA ------------------- //
-
-
+// Función irADestino también necesita corrección
 async function irADestino(place) {
   if (!place || !place.lat || !place.lon) return;
   
@@ -583,7 +601,10 @@ async function irADestino(place) {
 
   // Marcar destino
   if (destinoMarker) map.removeLayer(destinoMarker);
-  destinoMarker = L.marker(destino, { icon: crearDestinoIcon() }).addTo(map).bindPopup("Destino").openPopup();
+  destinoMarker = L.marker(destino, { icon: crearDestinoIcon() })
+    .addTo(map)
+    .bindPopup("Destino")
+    .openPopup();
 
   try {
     // Obtener ubicación actual
@@ -600,7 +621,6 @@ async function irADestino(place) {
     alert("No se pudo calcular la ruta");
   }
 }
-
 class PriorityQueue {
   constructor() { this.elements = []; }
   enqueue(element, priority) { this.elements.push({ element, priority }); this.elements.sort((a, b) => a.priority - b.priority); }
