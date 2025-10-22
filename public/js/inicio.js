@@ -211,16 +211,6 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
   }
 
   try {
-    Swal.fire({
-      ...swalConfig,
-      title: 'Procesando emergencia...',
-      html: 'Obteniendo contactos y ubicación...',
-      allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
     const res = await fetch(`https://tesis-f5ik.onrender.com/contactos/${idUsuario}`);
     if (!res.ok) throw new Error("No se pudieron obtener los contactos");
     const contactos = await res.json();
@@ -246,20 +236,6 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
 
     Swal.close();
 
-    const confirmacion = await Swal.fire({
-      ...swalConfig,
-      icon: 'warning',
-      title: '¿Enviar alerta de emergencia?',
-      text: `Se notificará a ${contactos.length} contacto(s) con tu ubicación actual`,
-      showCancelButton: true,
-      confirmButtonText: 'Sí, enviar',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#d62839',
-      cancelButtonColor: '#3e2c6d'
-    });
-
-    if (!confirmacion.isConfirmed) return;
-
     let enviados = 0;
     contactos.forEach(c => {
       let numero = String(c.contacto || "").replace(/[^\d]/g, "");
@@ -268,7 +244,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       if (!numero.startsWith("54")) numero = "54" + numero;
       numero = numero.replace(/^54(11|2\d|3\d)15/, "54$1");
 
-      const mensaje = `🚨 ¡ALERTA DE EMERGENCIA! 🚨\n\nEstoy en una situación de emergencia. Mi ubicación actual:\n\nhttps://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}\n\n⚠️ Por favor, revisa este mensaje lo antes posible.`;
+      const mensaje = `¡ALERTA DE EMERGENCIA!\n\nEstoy en una situación de emergencia. Mi ubicación actual:\n\nhttps://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}\n\n⚠️ Por favor, revisa este mensaje lo antes posible.`;
       const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
       window.open(link, "_blank");
       enviados++;
