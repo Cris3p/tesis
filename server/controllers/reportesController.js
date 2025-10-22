@@ -26,7 +26,7 @@ exports.generarReporte = async (req, res) => {
         let id_reporte;
         try {
             id_reporte = await reportesModel.generarReporte(
-                Number(id_usuario), tipo_crimen, Number(lat), Number(lon), fecha_hora, localidad, provincia, descripcion || null, iluminacion, gente
+                Number(id_usuario), tipo_crimen, Number(lat), Number(lon), fecha_hora, localidad, provincia, descripcion, iluminacion, gente
             );
             console.log("Reporte guardado en la base de datos con ID:", id_reporte);
         } catch (dbError) {
