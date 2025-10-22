@@ -2,7 +2,7 @@
 const { distanciaMetros, obtenerRutasOSRM, obtenerRiesgoTramos, evaluarRuta, dijkstra, buildGraphFromGeoJSON } = require('../models/rutasModel');
 const fs = require('fs');
 
-const geojson = JSON.parse(fs.readFileSync('../data/tortuGB.geojson', 'utf8'));
+const geojson = JSON.parse(fs.readFileSync('/data/tortuGB.geojson', 'utf8'));
 
 exports.obtenerRutaSegura = async (req, res) => {
   try {
