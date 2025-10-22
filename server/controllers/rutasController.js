@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 
 
-const geojson = JSON.parse(fs.readFileSync('/data/tortuGB.geojson', 'utf8'));
 
 exports.obtenerRutaSegura = async (req, res) => {
  
@@ -14,7 +13,7 @@ exports.obtenerRutaSegura = async (req, res) => {
       return res.status(400).json({ error: "Faltan parámetros: origen y destino." });
     }
    try {
-  const basePath = path.join(__dirname, '..', '..', 'public', 'data', 'tortuGB.geojson');
+    const basePath = path.join(process.cwd(), 'public', 'data', 'tortuGB.geojson');
     // Obtener rutas de OSRM con modo
     const rutas = await obtenerRutasOSRM(origen, destino, mode, 3);
 
