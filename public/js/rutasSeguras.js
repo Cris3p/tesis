@@ -11,7 +11,7 @@ async function obtenerRutaSegura(origen, destino, mode = 'foot', retries = 3) {
         routingControl = null;
       }
 
-      const res = await fetch(`https://tesis-f5ik.onrender.com/rutas/segura?origen=${encodeURIComponent(origen)}&destino=${encodeURIComponent(destino)}`);
+      const res = await fetch(`/rutas/segura?origen=${encodeURIComponent(origen)}&destino=${encodeURIComponent(destino)}`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       console.log("Datos de ruta recibidos:", data);
