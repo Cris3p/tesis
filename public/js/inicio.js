@@ -197,7 +197,6 @@ iniciarSeguimientoUbicacion();
 map.locate({ setView: true, maxZoom: 16 });
 
 ///-------------------BOTON DE EMERGENCIA----------------------------//
-///-------------------BOTON DE EMERGENCIA----------------------------//
 document.getElementById("btn-emergencia").addEventListener("click", async () => {
   const idUsuario = Number(localStorage.getItem("usuarioId"));
   
@@ -242,7 +241,6 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       return;
     }
 
-    // Obtener ubicación actual con estrategia dual + fallback del mapa
     let ubicacion;
     try {
       ubicacion = await new Promise((resolve, reject) => {
@@ -372,9 +370,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
         return;
       }
 
-      const mensaje = `¡AYUDA!
-
-${c.nombre ? c.nombre + ', ' : ''}Estoy en una situación de emergencia y necesito ayuda.
+      const mensaje = `¡AYUDA! Estoy en una situación de emergencia y necesito ayuda.
 Mi ubicación actual:
 https://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}`;
       
@@ -394,10 +390,7 @@ https://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}`;
     });
 
     // Confirmación de envío
-    let mensajeResultado = `<p>Se han abierto <strong>${enviados}</strong> conversación(es) de WhatsApp:</p>
-      <ul style="text-align: left; margin-top: 10px; padding-left: 20px;">
-        ${mensajesEnviados.map(nombre => `<li>${nombre}</li>`).join('')}
-      </ul>`;
+    let mensajeResultado = `<p>Se han abierto <strong>${enviados}</strong> conversación(es) de WhatsApp con tus contactos de emerencia</p>`;
     
     if (contactos.length > 3) {
       mensajeResultado += `<p style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 5px; font-size: 13px;">
