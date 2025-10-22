@@ -1,0 +1,48 @@
+/* Estilos de reportes.css aplicados a #suggestions */
+#suggestions {
+  list-style: none;
+  background: var(--negro-principal);
+  border: 1px solid var(--violeta-claro); 
+  border-radius: 10px;
+  padding: 0;
+  max-height: 180px;
+  overflow-y: auto;
+  position: absolute; 
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: none;
+}
+
+.suggestion { 
+  padding: 12px 15px; 
+  cursor: pointer;
+  border-bottom: none;
+  color: var(--texto);
+  transition: background 0.2s;
+}
+
+.suggestion:hover {
+  background: var(--violeta-principal);
+}
+
+.suggestion.active {
+  background: var(--violeta-vivo);
+}
+
+/* Scrollbar (Estilo reportes.css) */
+#suggestions::-webkit-scrollbar {
+  width: 8px;
+}
+#suggestions::-webkit-scrollbar-track {
+  background: var(--negro-secundario);
+  border-radius: 10px;
+}
+#suggestions::-webkit-scrollbar-thumb {
+  background: var(--violeta-principal);
+  border-radius: 10px;
+}
+#suggestions::-webkit-scrollbar-thumb:hover {
+  background: var(--violeta-vivo);
+}

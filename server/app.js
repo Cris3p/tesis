@@ -9,11 +9,14 @@ const fs = require('fs');
 
 const app = express();
 
-app.use(cors({ // Permite peticiones de métodos complejos (PUT, DELETE) desde el navegador
+// Permite peticiones de métodos complejos (PUT, DELETE) desde el navegador
+app.use(cors({
   origin: true,
   credentials: true
 }));
+
 // Configuración de Middlewares
+app.use(cors()); // Permite peticiones de métodos complejos (PUT, DELETE) desde el navegador
 app.use(express.json()); // Permite a Express leer JSON en el cuerpo de las peticiones
 app.use(cookieParser()); // Habilita el manejo de cookies
 app.use(express.static(path.join(__dirname, '../public'))); // Sirve archivos estáticos (HTML, CSS, JS)
@@ -34,6 +37,7 @@ app.use('/contactos', contactosRoutes);
 app.use('/usuarios', usuariosRoutes);
 app.use('/estadisticas', estadisticasRoutes);
 app.use('/soporte', soporteRoutes);
+app.get('/rutas/segura', rutasController.obtenerRutaSegura);
 
 
 function handleController(section, req, res) {
