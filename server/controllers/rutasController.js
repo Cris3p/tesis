@@ -13,8 +13,27 @@ exports.obtenerRutaSegura = async (req, res) => {
     }
    try {
     const basePath = path.join(process.cwd(), '..','public', 'data', 'tortuGB.geojson');
+    console.log("Intentando leer archivo en:", basePath);
+    const geojsonData = await fs.readFile(basePath, 'utf8');
+    const geojson = JSON.parse(geojsonData);
     // Obtener rutas de OSRM con modo
     const rutas = await obtenerRutasOSRM(origen, destino, mode, 3);
+
+    if (!rutas || rutas.length === 0) {
+      // Fallback a GeoJSON si OSRM falla
+      const [olat, olon] = origen.split(",").map(Number);
+      const [dlat, dlon] = destino.split(",").map(Number);
+      const startPoint = [olat, olon];
+      const endPoint = [dlat, dlon];
+
+      const graph = buildGraphFromGeoJSON(geojson);
+
+      let startNode = null, endNode = null;
+      geojson.features.forEach((feature, index) => {
+        const coords = feature.geometry.coordinates[0];
+        if (distanciaMetros(coords, startPoint) < 200) startNode = `node_${index}`;
+        if (distanciaMetros(coords, endPoint) < 200) endNode = `node_${index}`;
+      });
 
     if (!rutas || rutas.length === 0) {
       // Fallback a GeoJSON si OSRM falla
