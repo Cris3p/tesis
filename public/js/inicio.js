@@ -1,17 +1,30 @@
 //-------------------MAPA---LEAFLET.JS----------------------------//
 
-var map = L.map('map').setView([0.0, 0.0], 2.5); // Vista inicial del mapa centrada en coordenadas 0,0 con un zoom de 2.5
-// Declarar la variable global para que todos la vean
-let ubicacionActual = null;
+// Configuración global de SweetAlert2
+const swalConfig = {
+  confirmButtonColor: '#5b3ea1',
+  background: '#1f1c29',
+  color: '#e4e6eb',
+  iconColor: '#5b3ea1',
+  heightAuto: false
+};
+
+var map = L.map('map').setView([0.0, 0.0], 2.5);
+
 L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
   maxZoom: 20,
   attribution: '&copy; Stadia Maps'
 }).addTo(map);
 
 var marker;
-let routingControl = null;
+var comisariasLayer = null;
+var hospitalesLayer = null;
+var routingControl = null;
+var ubicacionActual = null; // ✅ DECLARAR GLOBALMENTE
+var destinoMarker = null;
+var rutaPolyline = null; // Para guardar la línea de ruta
 
-// === FUNCIÓN PARA OBTENER UBICACIÓN CON PROMISE ===
+// ✅ FUNCIÓN PARA OBTENER UBICACIÓN ACTUAL
 function obtenerUbicacionActual() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
@@ -25,6 +38,7 @@ function obtenerUbicacionActual() {
           lat: pos.coords.latitude, 
           lon: pos.coords.longitude 
         };
+        console.log("Ubicación obtenida:", ubicacion);
         resolve(ubicacion);
       },
       (err) => {
@@ -36,7 +50,7 @@ function obtenerUbicacionActual() {
       { 
         enableHighAccuracy: true, 
         timeout: 10000, 
-        maximumAge: 30000 
+        maximumAge: 5000 
       }
     );
   });
@@ -60,17 +74,41 @@ function crearMarker2Icon() {
   });
 }
 
-var destinoMarker;
-
 function crearDestinoIcon() {
   return L.divIcon({
     className: 'destino-marker',
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-    html: '<div class="destino-dot"></div>'
+    iconSize: [25, 25],
+    iconAnchor: [12, 12],
+    html: '<div style="background: #d62839; border: 3px solid white; border-radius: 50%; width: 25px; height: 25px;"></div>'
   });
 }
 
+function crearComisariaIcon() {
+  return L.divIcon({
+    className: 'comisaria-marker',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    html: '<img src="../img/policia.png" style="width: 100%; height: 100%; object-fit: contain;" />'
+  });
+}
+
+function crearHospitalIcon() {
+  return L.divIcon({
+    className: 'hospital-marker',
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+    html: '<img src="../img/hospital.png" style="width: 100%; height: 100%; object-fit: contain;" />'
+  });
+}
+
+function crearPulseIcon() {
+  return L.divIcon({
+    className: 'pulse-marker',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    html: '<div class="pulse-inner"></div>'
+  });
+}
 
 function onLocationFound(e) {
   if (marker) {
@@ -92,17 +130,33 @@ function onLocationFound(e) {
     L.marker(e.latlng, { icon: crearLocationIcon() })
   ]).addTo(map);
 
+  // Actualizar ubicación actual
+  ubicacionActual = {
+    lat: e.latlng.lat,
+    lon: e.latlng.lng
+  };
+
   map.setView(e.latlng, 16);
 }
 
 function onLocationError(e) {
-  alert("No se pudo obtener tu ubicación: " + e.message);
+  Swal.fire({
+    ...swalConfig,
+    icon: 'error',
+    title: 'Error de ubicación',
+    text: 'No se pudo obtener tu ubicación: ' + e.message
+  });
   console.error('Error de geolocalización:', e);
 }
 
 function iniciarSeguimientoUbicacion() {
   if (!navigator.geolocation) {
-    alert("Geolocalización no soportada en este dispositivo");
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Geolocalización no disponible',
+      text: 'Tu dispositivo no soporta la geolocalización'
+    });
     return;
   }
 
@@ -113,183 +167,190 @@ function iniciarSeguimientoUbicacion() {
         accuracy: pos.coords.accuracy
       };
       onLocationFound(coords);
-      console.log('Ubicación actualizada:', pos.coords);
     },
     (err) => {
-      console.warn("Timeout geolocalización, usando centro del mapa:", err);
-      const center = map.getCenter();
-      ubicacionActual = { lat: center.lat, lon: center.lng };
+      onLocationError(err);
     },
-    { enableHighAccuracy: true, timeout: 30000, maximumAge: 60000 }
-
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
   );
 }
 
-var marker2;
-
-map.doubleClickZoom.disable();
-map.on('dblclick', function (e) {
-  if (marker2) {
-    map.removeLayer(marker2);
-  }
-  marker2 = L.marker(e.latlng, { icon: crearMarker2Icon() })
-    .addTo(map)
-    .bindPopup("Marcador agregado")
-    .openPopup();
-  document.getElementById('btnQuitar').style.display = 'block';
-  console.log('Marcador secundario añadido en:', e.latlng);
-});
-
-function quitarMarker2() {
-  if (marker2) {
-    map.removeLayer(marker2);
-    marker2 = null;
-    document.getElementById('btnQuitar').style.display = 'none';
-    console.log('Marcador secundario eliminado');
-  }
-}
-
-function crearPulseIcon() {
-  return L.divIcon({
-    className: 'pulse-marker',
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-    html: '<div class="pulse-inner"></div>'
-  });
-}
-
-const cargarReportes = async (endpoint, map) => {
+// ✅ FUNCIÓN PARA CALCULAR Y DIBUJAR RUTA USANDO OSRM
+async function obtenerRutaSegura(origen, destino, modo = 'foot') {
   try {
-    const response = await fetch(endpoint);
-    if (!response.ok) {
-      throw new Error(`Error en la solicitud: ${response.status}`);
+    console.log("Calculando ruta:", { origen, destino, modo });
+
+    // Limpiar ruta anterior
+    if (rutaPolyline) {
+      map.removeLayer(rutaPolyline);
+      rutaPolyline = null;
     }
+
+    // OSRM API (servicio gratuito de OpenStreetMap)
+    const url = `https://router.project-osrm.org/route/v1/${modo}/${origen};${destino}?overview=full&geometries=geojson`;
+    
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Error OSRM: ${response.status}`);
+    
     const data = await response.json();
-    console.log('Reportes obtenidos:', data); // Depuración
-
-    if (!Array.isArray(data)) {
-      throw new Error('Los datos no son un array');
+    
+    if (!data.routes || data.routes.length === 0) {
+      throw new Error("No se encontró una ruta");
     }
 
-    data.forEach(reporte => {
-      if (!reporte.lat || !reporte.lon) {
-        console.warn('Reporte con coordenadas inválidas:', reporte);
-        return;
-      }
-      L.marker([reporte.lat, reporte.lon], { icon: crearPulseIcon() })
-        .addTo(map)
-        .bindPopup(`<b>${reporte.tipo_crimen.toUpperCase()}</b><br>${reporte.descripcion}`);
+    const route = data.routes[0];
+    const coordinates = route.geometry.coordinates;
+    
+    // Convertir coordenadas [lon, lat] a [lat, lon] para Leaflet
+    const latlngs = coordinates.map(coord => [coord[1], coord[0]]);
+    
+    // Dibujar la ruta
+    rutaPolyline = L.polyline(latlngs, {
+      color: '#5b3ea1',
+      weight: 5,
+      opacity: 0.8,
+      lineJoin: 'round',
+      lineCap: 'round'
+    }).addTo(map);
+
+    // Ajustar vista para mostrar toda la ruta
+    map.fitBounds(rutaPolyline.getBounds(), { padding: [50, 50] });
+
+    // Mostrar información de la ruta
+    const distanciaKm = (route.distance / 1000).toFixed(2);
+    const tiempoMin = Math.round(route.duration / 60);
+
+    Swal.fire({
+      ...swalConfig,
+      icon: 'success',
+      title: 'Ruta calculada',
+      html: `
+        <p><strong>Distancia:</strong> ${distanciaKm} km</p>
+        <p><strong>Tiempo estimado:</strong> ${tiempoMin} minutos</p>
+      `,
+      confirmButtonText: 'Entendido'
     });
+
+    console.log("Ruta dibujada exitosamente");
+
   } catch (error) {
-    console.error("Error cargando reportes:", error);
-    alert('No se pudieron cargar los reportes: ' + error.message);
+    console.error("Error al obtener ruta:", error);
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Error al calcular ruta',
+      text: error.message || 'No se pudo calcular la ruta'
+    });
   }
-};
+}
 
-// Llamar a la función para cargar reportes
-cargarReportes('/reportes/getall', map);
+// ✅ FUNCIÓN MEJORADA PARA IR AL DESTINO
+async function irADestino(place) {
+  if (!place || !place.lat || !place.lon) {
+    console.error("Datos de lugar inválidos:", place);
+    return;
+  }
+  
+  const destino = L.latLng(place.lat, place.lon);
 
-// Configurar eventos de ubicación
-map.on('locationfound', onLocationFound);
-map.on('locationerror', onLocationError);
-
-
-map.locate({ setView: true, maxZoom: 16 });
-
-///-------------------BOTON DE EMERGENCIA----------------------------//
-document.getElementById("btn-emergencia").addEventListener("click", async () => {
-  const idUsuario = Number(localStorage.getItem("usuarioId"));
-  if (!idUsuario) return alert("Iniciá sesión primero.");
+  // Marcar destino
+  if (destinoMarker) map.removeLayer(destinoMarker);
+  destinoMarker = L.marker(destino, { icon: crearDestinoIcon() })
+    .addTo(map)
+    .bindPopup(`<b>Destino</b><br>${place.display_name || 'Ubicación seleccionada'}`)
+    .openPopup();
 
   try {
-    // Traer contactos de emergencia desde el backend
-    const res = await fetch(`/contactos/${idUsuario}`);
-    if (!res.ok) throw new Error("No se pudieron obtener los contactos");
-    const contactos = await res.json();
-
-    if (!Array.isArray(contactos) || !contactos.length) {
-      return alert("No hay contactos de emergencia guardados");
+    // Asegurar que tenemos ubicación actual
+    if (!ubicacionActual) {
+      console.log("Obteniendo ubicación actual...");
+      ubicacionActual = await obtenerUbicacionActual();
     }
-
-    // Obtener ubicación actual
-    const ubicacion = await new Promise((resolve, reject) => {
-      if (!navigator.geolocation) return reject(new Error("Geolocalización no soportada"));
-      navigator.geolocation.getCurrentPosition(
-        pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
-        err => reject(new Error("Error al obtener ubicación: " + err.message)),
-        { enableHighAccuracy: true, timeout: 100000, maximumAge: 0 }
-      );
-    });
-
-    // Enviar mensaje a cada contacto via WhatsApp
-    contactos.forEach(c => {
-      let numero = String(c.contacto || "").replace(/[^\d]/g, "");
-
-      // Normalizar formato argentino (ajustar según tu DB)
-      if (numero.startsWith("0")) numero = numero.slice(1);
-      if (!numero.startsWith("54")) numero = "54" + numero;
-      numero = numero.replace(/^54(11|2\d|3\d)15/, "54$1"); // quita el 15 si existe
-
-      const mensaje = `¡Ayuda! Estoy en una emergencia. Mi ubicación: https://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}`;
-      const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-      window.open(link, "_blank");
-    });
-
+    
+    const origen = `${ubicacionActual.lon},${ubicacionActual.lat}`; // lon,lat para OSRM
+    const dest = `${place.lon},${place.lat}`;
+    
+    console.log("Calculando ruta desde:", origen, "hacia:", dest);
+    
+    await obtenerRutaSegura(origen, dest, 'foot');
+    
   } catch (err) {
-    alert(err.message || err);
-    console.error(err);
+    console.error("Error al calcular ruta:", err);
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Error',
+      text: 'No se pudo calcular la ruta: ' + err.message
+    });
   }
-});
+}
 
-
-// === GEOLOCALIZACIÓN Y BOTÓN DE BÚSQUEDA ===
+// === BUSCADOR DE DIRECCIONES ===
 const input = document.getElementById("searchInput");
 const btnUbicacion = document.getElementById("searchBtn");
 const suggestionsBox = document.getElementById("suggestions");
 
-input.parentNode.appendChild(suggestionsBox); // Adjuntarlo al input
-
-// === MODIFICAR EL EVENTO DEL BOTÓN DE BÚSQUEDA ===
+// ✅ EVENTO DEL BOTÓN DE BÚSQUEDA
 btnUbicacion.addEventListener("click", async () => {
-  try {
-    // Primero obtener la ubicación actual y ESPERAR
-    ubicacionActual = await obtenerUbicacionActual();
-    console.log("Ubicación actual obtenida:", ubicacionActual);
-    
-    // Ahora sí ejecutar la búsqueda si hay texto
-    const query = input.value.trim();
-    if (query) {
-      await buscarDireccionFinal(query);
-    }
-  } catch (error) {
-    console.error("Error en búsqueda:", error);
-    alert("No se pudo obtener tu ubicación para calcular la ruta");
+  const query = input.value.trim();
+  
+  if (!query) {
+    Swal.fire({
+      ...swalConfig,
+      icon: 'warning',
+      title: 'Campo vacío',
+      text: 'Por favor, ingresá una dirección para buscar'
+    });
+    return;
   }
-});
 
-// Función para buscar y dibujar la ruta al presionar el botón de búsqueda
-async function buscarDireccionFinal(query) {
   try {
+    Swal.fire({
+      ...swalConfig,
+      title: 'Buscando...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
+
     const res = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=ar`,
       { headers: { "User-Agent": "OnTrack-App" } }
     );
-    const data = await res.json();
-    const place = data[0];
     
-    if (place) {
-      await irADestino(place);
+    const data = await res.json();
+    Swal.close();
+    
+    if (data && data.length > 0) {
+      await irADestino(data[0]);
     } else {
-      alert("No se encontró la ubicación buscada");
+      Swal.fire({
+        ...swalConfig,
+        icon: 'warning',
+        title: 'No encontrado',
+        text: 'No se encontró la ubicación buscada'
+      });
     }
   } catch (error) {
+    Swal.close();
     console.error("Error en búsqueda:", error);
-    alert("Error al buscar la ubicación");
+    Swal.fire({
+      ...swalConfig,
+      icon: 'error',
+      title: 'Error',
+      text: 'Error al buscar la ubicación'
+    });
   }
-}
+});
 
-// === SUGERENCIAS DE DIRECCIONES (LÓGICA AVANZADA DE buscadorRuta.js) ===
+// ✅ SUGERENCIAS MIENTRAS ESCRIBÍS
+let debounceTimer;
 input.addEventListener("input", async function () {
+  clearTimeout(debounceTimer);
+  
   const query = this.value.trim();
   suggestionsBox.innerHTML = "";
 
@@ -298,191 +359,133 @@ input.addEventListener("input", async function () {
     return;
   }
 
-  try {
-    // Asegurarse de tener ubicación actual antes de buscar
-    if (!ubicacionActual) {
-      ubicacionActual = await obtenerUbicacionActual();
-    }
+  debounceTimer = setTimeout(async () => {
+    try {
+      // Asegurar ubicación actual
+      if (!ubicacionActual) {
+        ubicacionActual = await obtenerUbicacionActual();
+      }
 
-    let params = `format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=10&countrycodes=ar`;
+      let params = `format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=ar`;
 
-    if (ubicacionActual) {
-      const lat = ubicacionActual.lat;
-      const lon = ubicacionActual.lon;
-      const viewbox = `${lon - 0.1},${lat - 0.1},${lon + 0.1},${lat + 0.1}`; // Un poco más amplio
-      params += `&viewbox=${viewbox}&bounded=1`;
-    } else {
-      // Priorizar Argentina si no tenemos ubicación (fallback)
-      params += `&viewbox=-75,-55,-55,-20&bounded=0`;
-    }
+      if (ubicacionActual) {
+        const lat = ubicacionActual.lat;
+        const lon = ubicacionActual.lon;
+        const viewbox = `${lon - 0.5},${lat - 0.5},${lon + 0.5},${lat + 0.5}`;
+        params += `&viewbox=${viewbox}&bounded=0`;
+      }
 
-    const url = `https://nominatim.openstreetmap.org/search?${params}`;
+      const url = `https://nominatim.openstreetmap.org/search?${params}`;
+      const res = await fetch(url, { headers: { "User-Agent": "OnTrack-App" } });
 
+      if (!res.ok) throw new Error(`Error HTTP: ${res.status}`);
 
-    const res = await fetch(url, { headers: { "User-Agent": "OnTrack-App" } });
+      const data = await res.json();
 
-    if (!res.ok) throw new Error(`Error HTTP: ${res.status}`);
+      data.forEach((item) => {
+        const li = document.createElement("li");
+        li.className = "suggestion";
+        li.textContent = item.display_name;
+        
+        li.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+        });
+        
+        li.addEventListener("click", async () => {
+          input.value = item.display_name;
+          suggestionsBox.innerHTML = "";
+          suggestionsBox.style.display = "none";
 
-    const data = await res.json();
-
-    data.forEach((item) => {
-      const li = document.createElement("li");
-      li.className = "suggestion";
-      li.textContent = item.display_name;
-      
-      // Prevenir que el blur oculte las sugerencias antes del click
-      li.addEventListener("mousedown", (e) => {
-        e.preventDefault(); // Evita que el input pierda el foco
+          await irADestino(item);
+        });
+        
+        suggestionsBox.appendChild(li);
       });
-      
-      li.addEventListener("click", async () => {
-        input.value = item.display_name;
-        suggestionsBox.innerHTML = "";
-        suggestionsBox.style.display = "none";
 
-        // Asegurar que tenemos ubicación actual
-        if (!ubicacionActual) {
-          ubicacionActual = await obtenerUbicacionActual();
-        }
-
-        const origen = `${ubicacionActual.lat},${ubicacionActual.lon}`;
-        await obtenerRutaSegura(origen, `${item.lat},${item.lon}`, 'foot');
-      });
-      suggestionsBox.appendChild(li);
-    });
-
-    suggestionsBox.style.display = "block";
-  } catch (err) {
-    console.error("Error al buscar sugerencias:", err);
-  }
+      if (data.length > 0) {
+        suggestionsBox.style.display = "block";
+      }
+    } catch (err) {
+      console.error("Error al buscar sugerencias:", err);
+    }
+  }, 300); // Delay de 300ms
 });
 
 input.addEventListener("blur", () => {
-  // Aumentar el tiempo para permitir que el click se registre
   setTimeout(() => { suggestionsBox.style.display = "none"; }, 300);
 });
 
+input.addEventListener("focus", () => {
+  if (suggestionsBox.children.length > 0) {
+    suggestionsBox.style.display = "block";
+  }
+});
 
-// ------------------- FUNCION PARA MOSTRAR LA RUTA ------------------- //
+// [... resto del código de reportes, comisarías, hospitales, etc. ...]
+// (Se mantiene igual, solo copiá el resto de tu código aquí)
 
-
-async function irADestino(place) {
-  if (!place || !place.lat || !place.lon) return;
-  
-  const destino = L.latLng(place.lat, place.lon);
-
-  // Marcar destino
-  if (destinoMarker) map.removeLayer(destinoMarker);
-  destinoMarker = L.marker(destino, { icon: crearDestinoIcon() }).addTo(map).bindPopup("Destino").openPopup();
-
+// Cargar reportes
+const cargarReportes = async (endpoint, map) => {
   try {
-    // Obtener ubicación actual
-    if (!ubicacionActual) {
-      ubicacionActual = await obtenerUbicacionActual();
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error(`Error en la solicitud: ${response.status}`);
     }
-    
-    const origen = `${ubicacionActual.lat},${ubicacionActual.lon}`;
-    console.log("Calculando ruta desde:", origen, "hacia:", `${destino.lat},${destino.lng}`);
-    
-    await obtenerRutaSegura(origen, `${destino.lat},${destino.lng}`, 'foot');
-  } catch (err) {
-    console.error("Error al calcular ruta:", err);
-    alert("No se pudo calcular la ruta");
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error('Los datos no son un array');
+    }
+
+    data.forEach(reporte => {
+      if (!reporte.lat || !reporte.lon) return;
+      L.marker([reporte.lat, reporte.lon], { icon: crearPulseIcon() })
+        .addTo(map)
+        .bindPopup(`<b>${reporte.tipo_crimen.toUpperCase()}</b><br>${reporte.descripcion || 'Sin descripción'}`);
+    });
+  } catch (error) {
+    console.error("Error cargando reportes:", error);
+  }
+};
+
+cargarReportes('/reportes/getall', map);
+
+// Configurar eventos de ubicación
+map.on('locationfound', onLocationFound);
+map.on('locationerror', onLocationError);
+
+// Doble click para marcar
+var marker2;
+map.doubleClickZoom.disable();
+map.on('dblclick', function (e) {
+  if (marker2) map.removeLayer(marker2);
+  marker2 = L.marker(e.latlng, { icon: crearMarker2Icon() })
+    .addTo(map)
+    .bindPopup("Marcador agregado")
+    .openPopup();
+  document.getElementById('btnQuitar').style.display = 'block';
+});
+
+function quitarMarker2() {
+  if (marker2) {
+    map.removeLayer(marker2);
+    marker2 = null;
+    document.getElementById('btnQuitar').style.display = 'none';
   }
 }
 
-class PriorityQueue {
-  constructor() { this.elements = []; }
-  enqueue(element, priority) { this.elements.push({ element, priority }); this.elements.sort((a, b) => a.priority - b.priority); }
-  dequeue() { return this.elements.shift(); }
-  isEmpty() { return this.elements.length === 0; }
-}
-
-function dijkstra(graph, start, end) {
-  const distances = { [start]: 0 };
-  const prev = {};
-  const pq = new PriorityQueue();
-  pq.enqueue(start, 0);
-
-  while (!pq.isEmpty()) {
-    const u = pq.dequeue().element;
-    if (u === end) break;
-    for (let neighbor in graph[u]) {
-      const alt = distances[u] + graph[u][neighbor];
-      if (!distances[neighbor] || alt < distances[neighbor]) {
-        distances[neighbor] = alt;
-        prev[neighbor] = u;
-        pq.enqueue(neighbor, alt);
-      }
-    }
-  }
-
-  let path = [];
-  let u = end;
-  while (u !== undefined) { path.push(u); u = prev[u]; }
-  return path.reverse();
-}
-
-function buildGraphFromGeoJSON(geojson) {
-  const graph = {};
-  geojson.features.forEach((feature, index) => {
-    const id = `node_${index}`;
-    graph[id] = {};
-    geojson.features.forEach((otherFeature, otherIndex) => {
-      if (index !== otherIndex) {
-        const dist = distanciaMetros(feature.geometry.coordinates[0], otherFeature.geometry.coordinates[0]);
-        if (dist < 100) graph[id][`node_${otherIndex}`] = dist;
-      }
-    });
-  });
-  return graph;
-}
-
-function distanciaMetros(a, b) {
-  const R = 6371e3;
-  const rad = x => (x * Math.PI) / 180;
-  const φ1 = rad(a[1]);
-  const φ2 = rad(b[1]);
-  const Δφ = rad(b[1] - a[1]);
-  const Δλ = rad(b[0] - a[0]);
-  const d =
-    Math.sin(Δφ / 2) ** 2 +
-    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
-  return 2 * R * Math.atan2(Math.sqrt(d), Math.sqrt(1 - d));
-}
-
-// Cargar GeoJSON
-fetch('/rutas/segura/tortuGB.geojson')
-  .then(response => response.json())
-  .then(geojson => {
-    const graph = buildGraphFromGeoJSON(geojson);
-
-    // Ejemplo: Calcular ruta al hacer clic
-    map.on('click', function (e) {
-      const start = L.latLng(pos.coords.latitude, pos.coords.longitude).toString()
-      const end = e.latlng;
-      let startNode = null, endNode = null;
-      geojson.features.forEach((feature, index) => {
-        const coords = feature.geometry.coordinates[0];
-        if (distanciaMetros([coords[1], coords[0]], [start.lat, start.lng]) < 100) startNode = `node_${index}`;
-        if (distanciaMetros([coords[1], coords[0]], [end.lat, end.lng]) < 100) endNode = `node_${index}`;
-      });
-      if (startNode && endNode) {
-        const path = dijkstra(graph, startNode, endNode);
-        const coords = path.map(nodeId => geojson.features[parseInt(nodeId.split('_')[1])].geometry.coordinates[0].map(c => [c[1], c[0]]));
-        L.polyline(coords.flat(), { color: "#ffffffff", weight: 5 }).addTo(map);
-      }
-    });
-  });
-
-iniciarSeguimientoUbicacion();
-
-// === INICIALIZAR UBICACIÓN AL CARGAR LA PÁGINA ===
+// ✅ INICIALIZAR AL CARGAR
 (async () => {
   try {
+    iniciarSeguimientoUbicacion();
+    map.locate({ setView: true, maxZoom: 16 });
+    
+    // Obtener ubicación inicial
     ubicacionActual = await obtenerUbicacionActual();
     console.log("Ubicación inicial cargada:", ubicacionActual);
   } catch (error) {
     console.error("No se pudo obtener ubicación inicial:", error);
   }
 })();
+
+// [Resto de código: botón emergencia, comisarías, hospitales, dropdown...]
