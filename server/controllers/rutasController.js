@@ -14,7 +14,7 @@ exports.obtenerRutaSegura = async (req, res) => {
    try {
     const basePath = path.join(process.cwd(), '..','public', 'data', 'tortuGB.geojson');
     console.log("Intentando leer archivo en:", basePath);
-    const geojsonData = await fs.readFile(basePath, 'utf8');
+    const geojsonData = await fs.readFileSync(basePath, 'utf8');
     const geojson = JSON.parse(geojsonData);
     // Obtener rutas de OSRM con modo
     const rutas = await obtenerRutasOSRM(origen, destino, mode, 3);
