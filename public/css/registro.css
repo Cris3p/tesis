@@ -190,8 +190,10 @@ header{
   margin-bottom: 20px;
   position: relative;
 }
-
-.fecha input[type="date"], .localidad{
+.localidad select {
+  color: #797979 !important;
+}
+.fecha input[type="date"] {
   width: 100%;
   padding: 15px 13px;
   border: none;
