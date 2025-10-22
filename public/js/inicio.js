@@ -372,14 +372,11 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
         return;
       }
 
-      const mensaje = `¡ALERTA DE EMERGENCIA!
+      const mensaje = `¡AYUDA!
 
 ${c.nombre ? c.nombre + ', ' : ''}Estoy en una situación de emergencia y necesito ayuda.
-
 Mi ubicación actual:
-https://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}
-
-Por favor, revisa este mensaje lo antes posible.`;
+https://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}`;
       
       const link = `https://api.whatsapp.com/send?phone=${numeroNormalizado}&text=${encodeURIComponent(mensaje)}`;
       
