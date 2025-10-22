@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ...swalConfig,
           icon: 'success',
           title: '¡Correo enviado!',
-          text: data.msg || 'Revisa tu correo para continuar con el restablecimiento.'
+          text: data.msg || 'Revisa tu correo para continuar con el restablecimiento. Si no lo encuentras, revisa tu spam.'
         });
       } else {
         const err = await res.json();

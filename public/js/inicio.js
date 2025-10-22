@@ -211,11 +211,11 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
   }
 
   try {
-    const res = await fetch(`https://tesis-f5ik.onrender.com/contactos/${idUsuario}`);
+    const res = await fetch(`/contactos/${idUsuario}`);
     if (!res.ok) throw new Error("No se pudieron obtener los contactos");
     const contactos = await res.json();
 
-    if (!Array.isArray(contactos) || !contactos.length) {
+    if (!Array.isArray(contactos) || !contactos.length === 0) {
       Swal.fire({
         ...swalConfig,
         icon: 'warning',
@@ -230,7 +230,7 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       navigator.geolocation.getCurrentPosition(
         pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
         err => reject(new Error("Error al obtener ubicación: " + err.message)),
-        { enableHighAccuracy: true, timeout: 100000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     });
 
@@ -244,9 +244,13 @@ document.getElementById("btn-emergencia").addEventListener("click", async () => 
       if (!numero.startsWith("54")) numero = "54" + numero;
       numero = numero.replace(/^54(11|2\d|3\d)15/, "54$1");
 
-      const mensaje = `¡ALERTA DE EMERGENCIA!\n\nEstoy en una situación de emergencia. Mi ubicación actual:\n\nhttps://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}\n\n⚠️ Por favor, revisa este mensaje lo antes posible.`;
+      const mensaje = `¡ALERTA DE EMERGENCIA!\n\nEstoy en una situación de emergencia. Mi ubicación actual:\n\nhttps://www.google.com/maps?q=${ubicacion.lat},${ubicacion.lon}\n\n Por favor, revisa este mensaje lo antes posible.`;
       const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-      window.open(link, "_blank");
+
+       setTimeout(() => {
+        window.open(link, "_blank");
+      }, enviados * 300);
+
       enviados++;
     });
 
