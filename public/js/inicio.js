@@ -616,7 +616,7 @@ async function buscarDireccionFinal(query) {
   }
 }
 
-// === SUGERENCIAS DE DIRECCIONES (LÓGICA AVANZADA DE buscadorRuta.js) ===
+// === SUGERENCIAS DE DIRECCIONES ===
 input.addEventListener("input", async function () {
   const query = this.value.trim();
   suggestionsBox.innerHTML = "";
@@ -719,89 +719,6 @@ async function irADestino(place) {
   }
 }
 
-class PriorityQueue {
-  constructor() { this.elements = []; }
-  enqueue(element, priority) { this.elements.push({ element, priority }); this.elements.sort((a, b) => a.priority - b.priority); }
-  dequeue() { return this.elements.shift(); }
-  isEmpty() { return this.elements.length === 0; }
-}
-
-function dijkstra(graph, start, end) {
-  const distances = { [start]: 0 };
-  const prev = {};
-  const pq = new PriorityQueue();
-  pq.enqueue(start, 0);
-
-  while (!pq.isEmpty()) {
-    const u = pq.dequeue().element;
-    if (u === end) break;
-    for (let neighbor in graph[u]) {
-      const alt = distances[u] + graph[u][neighbor];
-      if (!distances[neighbor] || alt < distances[neighbor]) {
-        distances[neighbor] = alt;
-        prev[neighbor] = u;
-        pq.enqueue(neighbor, alt);
-      }
-    }
-  }
-
-  let path = [];
-  let u = end;
-  while (u !== undefined) { path.push(u); u = prev[u]; }
-  return path.reverse();
-}
-
-function buildGraphFromGeoJSON(geojson) {
-  const graph = {};
-  geojson.features.forEach((feature, index) => {
-    const id = `node_${index}`;
-    graph[id] = {};
-    geojson.features.forEach((otherFeature, otherIndex) => {
-      if (index !== otherIndex) {
-        const dist = distanciaMetros(feature.geometry.coordinates[0], otherFeature.geometry.coordinates[0]);
-        if (dist < 100) graph[id][`node_${otherIndex}`] = dist;
-      }
-    });
-  });
-  return graph;
-}
-
-function distanciaMetros(a, b) {
-  const R = 6371e3;
-  const rad = x => (x * Math.PI) / 180;
-  const φ1 = rad(a[1]);
-  const φ2 = rad(b[1]);
-  const Δφ = rad(b[1] - a[1]);
-  const Δλ = rad(b[0] - a[0]);
-  const d =
-    Math.sin(Δφ / 2) ** 2 +
-    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
-  return 2 * R * Math.atan2(Math.sqrt(d), Math.sqrt(1 - d));
-}
-
-// Cargar GeoJSON
-fetch('/rutas/segura/tortuGB.geojson')
-  .then(response => response.json())
-  .then(geojson => {
-    const graph = buildGraphFromGeoJSON(geojson);
-
-    // Ejemplo: Calcular ruta al hacer clic
-    map.on('click', function (e) {
-      const start = L.latLng(pos.coords.latitude, pos.coords.longitude).toString()
-      const end = e.latlng;
-      let startNode = null, endNode = null;
-      geojson.features.forEach((feature, index) => {
-        const coords = feature.geometry.coordinates[0];
-        if (distanciaMetros([coords[1], coords[0]], [start.lat, start.lng]) < 100) startNode = `node_${index}`;
-        if (distanciaMetros([coords[1], coords[0]], [end.lat, end.lng]) < 100) endNode = `node_${index}`;
-      });
-      if (startNode && endNode) {
-        const path = dijkstra(graph, startNode, endNode);
-        const coords = path.map(nodeId => geojson.features[parseInt(nodeId.split('_')[1])].geometry.coordinates[0].map(c => [c[1], c[0]]));
-        L.polyline(coords.flat(), { color: "#ffffffff", weight: 5 }).addTo(map);
-      }
-    });
-  });
 
 iniciarSeguimientoUbicacion();
 
